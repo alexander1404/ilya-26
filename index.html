@@ -1,0 +1,1878 @@
+
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>  Санкт - Сити — Game код " ИЛЬЯ 26" </title>
+<meta name="description" content="Интерактивное приглашение на день рождения Ильи 19 ноября 2026 года"/>
+<meta name="theme-color" content="#0d1028"/>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d1028'/%3E%3Ctext x='16' y='21.5' font-family='monospace' font-size='12' font-weight='bold' fill='%23ff2d78' text-anchor='middle'%3EVL%3C/text%3E%3C/svg%3E"/>
+<!-- Шрифты опциональны: если сети нет, сработают системные фолбэки -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;500;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+:root{
+  --ink:#0d1028;--night:#151a3f;--pink:#ff2d78;--viol:#8a5bff;--teal:#25e6c6;--tango:#ff8a3d;
+  --fog:#aab3d6;--snow:#e9edff;--line:rgba(255,255,255,.1);
+  --disp:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Manrope","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+body{background-color:var(--ink);background-image:radial-gradient(120% 60% at 50% 0%,#141845 0%,var(--ink) 60%);color:var(--snow);font-family:var(--body);font-size:15px;line-height:1.6;overflow-x:hidden}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+::selection{background:rgba(255,45,120,.4)}
+a{color:inherit}
+button{font:inherit;color:inherit}
+
+/* ── плёнка: сканлайны + зерно + виньетка ── */
+.fx{position:fixed;inset:0;z-index:5;pointer-events:none}
+.fx::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.028) 0 1px,transparent 1px 3px)}
+.fx::after{content:"";position:absolute;inset:0;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E")}
+.vig{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 10%,transparent 55%,rgba(5,7,20,.5) 100%)}
+
+/* ── шапка ── */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(13,16,40,.85);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.05)}
+.topin{max-width:520px;margin:0 auto;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.logo{font-family:var(--mono);font-weight:700;font-size:14px;letter-spacing:.14em;text-decoration:none;display:flex;align-items:center;gap:6px}
+.logo b{color:var(--pink)}.logo i{font-style:normal;color:var(--fog)}.logo u{text-decoration:none;color:var(--teal)}
+.dotpulse{width:6px;height:6px;border-radius:99px;background:var(--teal);animation:pulse 1.6s infinite;margin-left:2px}
+@keyframes pulse{50%{opacity:.25}}
+.topbtns{display:flex;gap:8px}
+.iconbtn{width:40px;height:40px;border-radius:99px;border:1px solid var(--line);background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s}
+.iconbtn.on{color:var(--teal);border-color:rgba(37,230,198,.7);background:rgba(37,230,198,.1)}
+
+/* ── иконки ── */
+.ic{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* ── меню ─ */
+.menu{position:fixed;inset:0;z-index:55;background:rgba(13,16,40,.97);backdrop-filter:blur(6px);display:none;flex-direction:column}
+.menu.open{display:flex}
+.mhead{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.mlinks{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 32px}
+.mlinks a{display:flex;align-items:baseline;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.06);text-decoration:none;font-family:var(--disp);font-weight:700;text-transform:uppercase;font-size:17px;letter-spacing:.03em}
+.mlinks a i{font-family:var(--mono);font-style:normal;font-weight:400;font-size:12px;color:var(--teal)}
+.mfoot{padding:0 32px calc(32px + env(safe-area-inset-bottom))}
+.switch{display:flex;width:100%;justify-content:space-between;align-items:center;padding:12px 16px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.04);font-size:14px;cursor:pointer}
+.knobwrap{width:44px;height:24px;border-radius:99px;background:rgba(255,255,255,.15);position:relative;transition:.2s;flex:none}
+.knob{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:99px;background:#fff;transition:.2s}
+.switch[aria-checked="true"] .knobwrap{background:rgba(37,230,198,.7)}
+.switch[aria-checked="true"] .knob{left:22px}
+.mnote{margin-top:12px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.16em;color:rgba(170,179,214,.6)}
+
+/* ── сетка ── */
+.wrap{max-width:440px;margin:0 auto;padding:0 20px}
+section{padding:68px 0;scroll-margin-top:64px}
+.kicker{font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:var(--teal);display:flex;align-items:center;gap:8px;margin-bottom:8px}
+h1,h2,h3{font-family:var(--disp);text-transform:uppercase;line-height:1.15}
+h2{font-size:24px;margin-bottom:10px}
+.sub{color:var(--fog);max-width:44ch}
+.dim{color:var(--fog)}
+.small{font-size:12px}
+.tiny{font-size:10px;letter-spacing:.16em;text-transform:uppercase}
+.mono{font-family:var(--mono)}
+.center{text-align:center}
+.mt{margin-top:16px}.mt10{margin-top:10px}.mt24{margin-top:24px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.stack{display:grid;gap:10px}
+.rowgap{display:inline-flex;align-items:center;gap:8px}
+
+/* ── кнопки ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:12px;font-family:var(--disp);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border:1px solid transparent;cursor:pointer;transition:.2s;text-decoration:none;background:none}
+.btn.primary{background:var(--pink);color:#fff;box-shadow:0 0 24px rgba(255,45,120,.35)}
+.btn.primary:active{transform:scale(.98)}
+.btn.ghost{border-color:var(--line);background:rgba(255,255,255,.04)}
+.btn.ghost:active{transform:scale(.98)}
+.btn.block{width:100%}
+.btn.spread{justify-content:space-between}
+.btn.done{border-color:rgba(37,230,198,.6);background:rgba(37,230,198,.1);color:var(--teal);cursor:default}
+.btn[disabled]{cursor:default}
+
+/* ── HUD-карточки с неоновыми уголками ── */
+.card{position:relative;--cc:var(--teal);border:1px solid var(--line);background:rgba(255,255,255,.035);border-radius:16px;padding:20px}
+.card.pink{--cc:var(--pink)}
+.card.tango{--cc:var(--tango)}
+.card::before{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;
+  background:
+    linear-gradient(var(--cc),var(--cc)) left 0 top 0/16px 2px,
+    linear-gradient(var(--cc),var(--cc)) left 0 top 0/2px 16px,
+    linear-gradient(var(--cc),var(--cc)) right 0 top 0/16px 2px,
+    linear-gradient(var(--cc),var(--cc)) right 0 top 0/2px 16px,
+    linear-gradient(var(--cc),var(--cc)) left 0 bottom 0/16px 2px,
+    linear-gradient(var(--cc),var(--cc)) left 0 bottom 0/2px 16px,
+    linear-gradient(var(--cc),var(--cc)) right 0 bottom 0/16px 2px,
+    linear-gradient(var(--cc),var(--cc)) right 0 bottom 0/2px 16px;
+  background-repeat:no-repeat}
+
+/* ── досье / характеристики ── */
+.kv{font-family:var(--mono);font-size:12px}
+.kv>div{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
+.kv>div:last-child{border-bottom:0}
+.kv dt{text-transform:uppercase;letter-spacing:.14em;color:var(--fog)}
+.kv dd{font-weight:700;text-align:right;word-break:break-word}
+.stat{margin-top:14px}
+.srow{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.srow span{color:var(--fog)}.srow b{font-weight:700}
+.bar{height:8px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
+.fill{display:block;height:100%;width:0;border-radius:99px;transition:width 1.1s ease .15s}
+.rv.in .fill{width:var(--w)}
+.f-teal{background:var(--teal);box-shadow:0 0 12px rgba(37,230,198,.6)}
+.f-pink{background:var(--pink);box-shadow:0 0 12px rgba(255,45,120,.6)}
+.f-viol{background:var(--viol);box-shadow:0 0 12px rgba(138,91,255,.6)}
+.f-tango{background:var(--tango);box-shadow:0 0 12px rgba(255,138,61,.6)}
+.snote{margin-top:6px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:rgba(170,179,214,.7)}
+
+/* ── горизонтальные ленты ── */
+.hscroll{display:flex;gap:12px;overflow-x:auto;padding:4px 20px 8px;margin:0 -20px;scroll-snap-type:x mandatory}
+.hscroll>*{scroll-snap-align:start;flex:none}
+.no-sb{scrollbar-width:none}.no-sb::-webkit-scrollbar{display:none}
+.ph{width:176px;aspect-ratio:3/4;border:1px dashed rgba(255,255,255,.2);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:repeating-linear-gradient(135deg,rgba(255,255,255,.03) 0 10px,transparent 10px 20px);color:rgba(170,179,214,.6)}
+.ph .ic{width:22px;height:22px}
+.ph p{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.16em;text-align:center;padding:0 10px}
+.dcard{width:240px}
+.num{font-family:var(--mono);font-size:11px;color:var(--teal);letter-spacing:.2em}
+.dcard h3{font-size:14px;margin-top:10px}
+.dcard p{font-size:13px;color:var(--fog);margin-top:6px}
+.label{font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:var(--teal);margin:24px 0 10px}
+
+/* ── чипы, предупреждения ── */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 14px;border:1px solid var(--line);border-radius:99px;background:rgba(255,255,255,.04);font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--fog)}
+.chip.on{border-color:var(--pink);color:var(--pink);background:rgba(255,45,120,.1)}
+button.chip{cursor:pointer}
+.warnbox{border:1px solid rgba(255,138,61,.5);background:rgba(255,138,61,.07);border-radius:16px;padding:16px;display:flex;gap:10px;align-items:flex-start}
+.warnbox .ic{color:var(--tango);margin-top:3px}
+
+/* ── таймеры ── */
+.cdlabel{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--fog);margin-bottom:8px}
+.cdgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.cd-cell{border:1px solid rgba(37,230,198,.4);border-radius:10px;background:rgba(255,255,255,.04);padding:10px 0;text-align:center}
+.cd.pink .cd-cell{border-color:rgba(255,45,120,.4)}
+.cd-cell b{display:block;font-family:var(--mono);font-size:20px;font-variant-numeric:tabular-nums}
+.cd-cell span{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--fog)}
+.cd-exp{border:1px solid;border-radius:12px;padding:14px;text-align:center;font-family:var(--disp);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.cd-exp.pink{border-color:rgba(255,45,120,.5);background:rgba(255,45,120,.1);color:var(--pink)}
+.cd-exp.teal{border-color:rgba(37,230,198,.5);background:rgba(37,230,198,.1);color:var(--teal)}
+.dlbox{border:1px solid rgba(255,138,61,.5);background:rgba(255,138,61,.07);border-radius:16px;padding:16px;margin-top:16px}
+.dlbox .t{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--tango)}
+.dlbox .d{font-family:var(--mono);font-size:14px;margin-top:6px}
+
+/* ── hero ── */
+#hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;overflow:hidden;padding:110px 0 120px}
+#heroBg{position:absolute;inset:0}
+#heroBg .overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,16,40,.8),rgba(13,16,40,.35) 42%,var(--ink)),radial-gradient(60% 40% at 72% 12%,rgba(255,45,120,.2),transparent 70%),radial-gradient(55% 35% at 18% 88%,rgba(37,230,198,.16),transparent 70%)}
+#heroBg .scene{position:absolute;left:0;right:0;bottom:0;width:100%;height:60%}
+#heroBg .heroPhoto{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.45;filter:saturate(.7)}
+.bignum{position:absolute;top:36px;right:-12px;font-family:var(--disp);font-weight:900;font-size:min(44vw,320px);line-height:1;color:transparent;-webkit-text-stroke:2px rgba(255,45,120,.35);text-shadow:0 0 46px rgba(255,45,120,.18);pointer-events:none;user-select:none}
+@supports not (-webkit-text-stroke:1px black){.bignum{color:rgba(255,45,120,.2)}}
+/* ── сдвиг hero-блока (заголовок и всё, что над/под ним) на 20% вправо ──
+   translateX двигает блок целиком и не ломает остальную вёрстку.
+   20% считаются от ширины самого блока; хочешь сильнее/слабее — меняй число. */
+.hero-inner{position:relative;z-index:2;width:100%;transform:translateX(20%)}
+/* на телефоне блок и так во всю ширину — без сужения сдвиг обрезал бы текст справа,
+   поэтому здесь блок сужаем до 80% и прижимаем к левому краю: 20% помещаются целиком */
+@media (max-width:640px){
+  .hero-inner{width:80%;margin-left:0;margin-right:auto}
+}
+.h-title{font-size:clamp(38px,12vw,48px);font-weight:900;letter-spacing:-.01em;color:#fff}
+.h-sub{display:block;margin-top:12px;font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.3em;color:var(--teal)}
+.h-meta{margin-top:20px;font-family:var(--mono);font-size:13px;color:var(--fog)}
+.boot{margin-top:34px}
+.bootrow{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.14em;margin-bottom:8px}
+.bootrow .ok{color:var(--teal)}.bootrow .wait{color:var(--tango)}
+.bootbar{height:4px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden}
+.bootbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--teal));transition:width .3s}
+.hint{margin-top:12px;text-align:center;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:rgba(170,179,214,.7)}
+
+/* ── глитч заголовка ── */
+.glitch{position:relative;display:inline-block}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;left:0;top:0;width:100%;pointer-events:none;opacity:.85}
+.glitch::before{color:var(--teal);animation:glA 5.5s infinite steps(1,end)}
+.glitch::after{color:var(--pink);animation:glB 5.5s infinite steps(1,end)}
+@keyframes glA{0%,91%,100%{clip-path:inset(0 0 100% 0);transform:none}92%{clip-path:inset(10% 0 62% 0);transform:translate(-3px,-2px)}95%{clip-path:inset(58% 0 10% 0);transform:translate(3px,1px)}98%{clip-path:inset(32% 0 46% 0);transform:translate(-2px,2px)}}
+@keyframes glB{0%,91%,100%{clip-path:inset(100% 0 0 0);transform:none}93%{clip-path:inset(70% 0 8% 0);transform:translate(3px,2px)}96%{clip-path:inset(18% 0 66% 0);transform:translate(-3,-1px)}}
+
+/* ── штамп «принято» ── */
+.acceptwrap{position:relative;margin-top:18px}
+.stamp{position:absolute;top:-20px;right:4px;transform:rotate(-8deg);border:2px solid var(--teal);color:var(--teal);background:rgba(13,16,40,.85);border-radius:6px;padding:3px 10px;font-family:var(--disp);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.14em}
+
+/* ── карта ── */
+.mapwrap{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:rgba(255,255,255,.02)}
+.mapsvg{display:block;width:100%}
+.spot{cursor:pointer}
+.spot .body{fill:#12163a;stroke:rgba(255,255,255,.35)}
+.spot text{fill:var(--fog);font-family:var(--mono);font-weight:700;font-size:9px}
+.spot .ring{opacity:0;animation:ping 1.9s ease-out infinite;transform-origin:center;transform-box:fill-box}
+.spot.on .body{stroke:var(--pink)}
+.spot.on text{fill:var(--pink)}
+.spot.on .ring{opacity:1}
+@keyframes ping{0%{transform:scale(.5);opacity:.9}80%,100%{transform:scale(1.7);opacity:0}}
+.route{stroke-dasharray:7 7;animation:dash 1.5s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-14}}
+.locTitle{font-size:14px;margin-top:6px}
+.classified{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:20px;color:var(--pink);margin:10px 0 6px;letter-spacing:.02em}
+.addr{font-family:var(--disp);font-weight:700;color:var(--teal);font-size:16px;margin:10px 0 6px;word-break:break-word}
+.warn-text{color:var(--tango);font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin-top:10px}
+.pinkic{color:var(--pink)}.okic{color:var(--teal)}
+
+/* ── таймлайн ── */
+.tl{list-style:none;position:relative;margin-left:4px;padding-left:24px;border-left:1px solid var(--line)}
+.tl li{position:relative;padding-bottom:22px}
+.tl li:last-child{padding-bottom:0}
+.tl li::before{content:"";position:absolute;left:-29px;top:6px;width:10px;height:10px;border-radius:99px;border:2px solid var(--pink);background:var(--ink);box-shadow:0 0 10px rgba(255,45,120,.8)}
+.tl li.last::before{border-color:var(--tango);box-shadow:0 0 10px rgba(255,138,61,.8)}
+.t-time{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--pink)}
+.tl li.last .t-time{color:var(--tango)}
+.t-title{margin-top:2px}
+
+/* ── трансфер ── */
+.diagram{display:flex;align-items:center;gap:8px;color:var(--fog)}
+.node{width:36px;height:36px;border-radius:99px;display:flex;align-items:center;justify-content:center;border:1px solid;flex:none}
+.node.teal{border-color:rgba(37,230,198,.5);background:rgba(37,230,198,.1);color:var(--teal)}
+.node.pink{border-color:rgba(255,45,120,.5);background:rgba(255,45,120,.1);color:var(--pink)}
+.dash{flex:1;border-top:1px dashed rgba(255,255,255,.25)}
+.busic{color:var(--pink)}
+
+/* ── ночёвка ── */
+.beds{display:flex;align-items:center;gap:10px}
+.beds .ic{width:26px;height:26px;color:var(--teal)}
+.beds b{margin-left:auto;font-family:var(--mono);color:var(--teal)}
+.opts{list-style:none;display:grid;gap:6px;margin-top:8px}
+.opts li{display:flex;align-items:center;gap:10px;font-size:13px}
+.opts li::before{content:"";width:6px;height:6px;border-radius:99px;background:var(--viol);flex:none}
+
+/* ── вопросы формы ── */
+.qbox{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03);padding:14px 16px;margin-top:20px}
+.qbox summary{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--teal);cursor:pointer}
+.q{padding-left:20px;color:var(--fog);font-size:13px;display:grid;gap:4px;margin-top:10px}
+
+/* ── пропуск ── */
+.pass{border:1px solid rgba(37,230,198,.5);border-radius:18px;overflow:hidden;background:linear-gradient(180deg,var(--night),var(--ink));box-shadow:0 0 44px rgba(37,230,198,.14)}
+.pass .top{height:6px;background:linear-gradient(90deg,var(--pink),var(--viol),var(--teal))}
+.pass .pin{padding:20px}
+.pass h3{font-size:20px;font-weight:900;color:#fff;letter-spacing:.02em}
+.pass .plabel{margin-top:4px}
+.val{font-weight:700;text-align:right;word-break:break-word}
+.val.ok{color:var(--teal)}.val.locked{color:var(--pink)}
+.barcode{display:flex;align-items:stretch;gap:3px;height:40px;margin-top:8px}
+.barcode span{background:rgba(233,237,255,.8)}
+.bcode-cap{margin-top:6px;text-align:center;font-family:var(--mono);font-size:9px;letter-spacing:.3em;color:var(--fog)}
+.doneTitle{display:flex;align-items:center;gap:10px;font-family:var(--disp);font-size:17px;font-weight:700;text-transform:uppercase;color:var(--teal)}
+.closedTitle{font-family:var(--disp);font-size:17px;font-weight:900;text-transform:uppercase;color:var(--pink);letter-spacing:.02em}
+
+/* ── QR ── */
+.qrbox{width:fit-content;margin:16px auto 0;border-radius:12px;background:#e9f7f4;padding:12px;box-shadow:0 0 34px rgba(37,230,198,.22)}
+.qrbox img{display:block;width:176px;height:176px}
+.qrfall{width:200px;height:200px;border:1px dashed rgba(255,255,255,.25);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--fog);margin:16px auto 0}
+.qrurl{margin-top:6px;text-align:center;font-family:var(--mono);font-size:10px;color:rgba(170,179,214,.6);word-break:break-all}
+
+/* ── footer ── */
+footer{border-top:1px solid rgba(255,255,255,.05);padding:40px 0;text-align:center}
+.fcap{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.25em;color:rgba(170,179,214,.6)}
+.fsub{margin-top:8px;font-size:13px;color:var(--fog)}
+.fnote{margin-top:22px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:rgba(170,179,214,.4)}
+
+/* ── плавающие элементы ── */
+.cta{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:40;transform:translateY(130%);transition:transform .3s}
+.cta.show{transform:none}
+.cta-note{font-family:var(--mono);font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;opacity:.85}
+.toTop{position:fixed;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:40;width:44px;height:44px;border-radius:99px;border:1px solid var(--line);background:rgba(13,16,40,.9);display:none;align-items:center;justify-content:center;cursor:pointer}
+.toTop.show{display:flex}
+.toasts{position:fixed;left:12px;right:12px;bottom:calc(96px + env(safe-area-inset-bottom));z-index:70;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
+.toast{display:flex;align-items:center;gap:10px;max-width:380px;background:rgba(18,22,58,.95);border:1px solid;border-radius:12px;padding:12px 16px;font-size:13px;box-shadow:0 8px 30px rgba(0,0,0,.4);opacity:0;transform:translateY(14px);transition:.25s;pointer-events:auto}
+.toast.show{opacity:1;transform:none}
+.toast.ok{border-color:rgba(37,230,198,.5)}.toast.ok .ic{color:var(--teal)}
+.toast.warn{border-color:rgba(255,138,61,.6)}.toast.warn .ic{color:var(--tango)}
+.toast.info{border-color:rgba(255,45,120,.5)}.toast.info .ic{color:var(--pink)}
+
+/* ── модалка ── */
+.modal{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:none;align-items:flex-end;justify-content:center;padding:16px}
+.modal.open{display:flex}
+@media(min-width:640px){.modal{align-items:center}}
+.mbox{width:100%;max-width:400px;background:#12163a;border:1px solid rgba(37,230,198,.4);border-radius:18px;padding:20px}
+.mbox h3{font-size:17px;margin-top:8px}
+.field{width:100%;min-height:48px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--snow);padding:0 16px;font-family:var(--body);font-size:15px;margin-top:16px}
+.field:focus{outline:none;border-color:var(--teal)}
+.err{display:none;color:var(--pink);font-size:12px;margin-top:8px}
+.err.show{display:block}
+.xbtn{width:36px;height:36px;border-radius:99px;border:1px solid var(--line);background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--fog)}
+
+/* ── появление при скролле ── */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}
+.rv.in{opacity:1;transform:none}
+
+/* ── отключение анимаций ── */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+html.less-motion{scroll-behavior:auto}
+html.less-motion *,html.less-motion *::before,html.less-motion *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+
+/* ═══ WELCOME SCREEN: только изображение джойстика + кнопка PLAY ═══ */
+body.wl-lock{overflow:hidden}
+#welcome{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#0d1028;clip-path:circle(150% at 50% 50%)}
+#welcome::before{content:"";position:absolute;inset:0;z-index:5;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.03) 0 1px,transparent 1px 3px);pointer-events:none}
+.wl-inner{position:relative;z-index:6;width:100%;max-width:820px;padding:12px 12px calc(16px + env(safe-area-inset-bottom));max-height:100%;overflow-x:hidden;overflow-y:auto;scrollbar-width:none}
+.wl-inner::-webkit-scrollbar{display:none}
+.wl-inner>*{opacity:0;transform:translateY(26px);animation:wlUp .8s cubic-bezier(.2,.7,.2,1) forwards}
+.wl-inner>*:nth-child(1){animation-delay:.12s}
+.wl-inner>*:nth-child(2){animation-delay:.34s}
+/* подпись внизу экрана */
+.wl-cta{margin-top:clamp(14px,3.4vh,30px);text-align:center;font-family:var(--disp);font-weight:700;font-size:clamp(13px,3.6vw,21px);text-transform:uppercase;letter-spacing:.12em;color:#fff;text-shadow:0 0 18px rgba(255,45,120,.75),0 0 44px rgba(255,45,120,.35)}
+.wl-cta b{color:var(--pink);font-weight:900;animation:wlPulseTxt 1.6s ease-in-out infinite}
+@keyframes wlPulseTxt{50%{opacity:.45}}
+/* изображение джойстика — крупно, почти во весь экран */
+.wl-pad{position:relative;width:min(96vw,78vh,840px);margin:0 auto;display:block;cursor:pointer;border:0;background:none;padding:0;-webkit-tap-highlight-color:transparent;border-radius:26px}
+.wl-pad::before{content:"";position:absolute;inset:-8% -10%;border-radius:50%;background:conic-gradient(from 0deg,#ff2d78,#8a5bff,#25e6c6,#ff8a3d,#ff2d78);filter:blur(34px);opacity:.45;animation:wlGlow 7s linear infinite}
+.wl-pad img{position:relative;z-index:1;display:block;width:100%;height:auto;border-radius:26px;border:1px solid rgba(255,255,255,.14);box-shadow:0 24px 70px rgba(0,0,0,.55),0 0 46px rgba(255,45,120,.3),0 0 96px rgba(37,230,198,.18);animation:wlFloat 5.5s ease-in-out infinite}
+.wl-pad:focus-visible{outline:2px solid var(--teal);outline-offset:6px}
+.wl-pad.noimg{aspect-ratio:1;border:1px dashed rgba(255,255,255,.25);background:repeating-linear-gradient(135deg,rgba(255,255,255,.03) 0 12px,transparent 12px 24px);display:flex;align-items:center;justify-content:center;padding:16px}
+.wl-pad.noimg::after{content:"положи файл neon-gamepad.jpg рядом с index.html";font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.16em;color:rgba(170,179,214,.6)}
+/* горящая кнопка PLAY прямо на джойстике: позиция настраивается через --play-x / --play-y / --play-size */
+.wl-play{position:absolute;z-index:3;left:var(--play-x,50%);top:var(--play-y,50%);width:var(--play-size,26%);aspect-ratio:1;transform:translate(-50%,-50%);border:0;background:none;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;animation:wlSpin var(--play-spin,7s) linear infinite}
+.wl-play svg{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 10px rgba(255,45,120,.85)) drop-shadow(0 0 28px rgba(255,45,120,.45));transition:filter .2s}
+.wl-play .ring{transform-box:fill-box;transform-origin:center;animation:wlRing 2.2s ease-out infinite}
+.wl-play .core{transform-box:fill-box;transform-origin:center;animation:wlCore 1.6s ease-in-out infinite,wlCounterSpin var(--play-spin,7s) linear infinite}
+.wl-play:hover svg,.wl-play:focus-visible svg{filter:drop-shadow(0 0 14px rgba(255,45,120,1)) drop-shadow(0 0 44px rgba(255,45,120,.65))}
+.wl-play:hover,.wl-play:focus-visible{animation-duration:2.2s}
+.wl-play:focus-visible{outline:2px solid var(--teal);outline-offset:4px;border-radius:50%}
+.wl-play:active{animation-play-state:paused;transform:translate(-50%,-50%) scale(.93)}
+/* вспышка и финальная надпись при переходе */
+.wl-flash{position:absolute;inset:0;z-index:7;background:radial-gradient(60% 60% at 50% 50%,rgba(255,45,120,.6),transparent 70%);opacity:0;pointer-events:none}
+.wl-mission{position:absolute;inset:0;z-index:8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;opacity:0;pointer-events:none}
+.wl-mission span{font-family:var(--disp);font-size:clamp(46px,14vw,112px);font-weight:900;line-height:.95;text-transform:uppercase;color:#fff;text-shadow:0 0 42px rgba(255,45,120,.95),0 0 100px rgba(255,45,120,.5)}
+.wl-mission span:last-child{color:var(--teal);text-shadow:0 0 42px rgba(37,230,198,.95)}
+#welcome.go .wl-inner{animation:wlZoom .85s ease-in forwards}
+#welcome.go .wl-flash{animation:wlFlash .55s ease-out forwards}
+#welcome.go .wl-mission{animation:wlImpact 1.35s .45s cubic-bezier(.2,.7,.3,1) forwards}
+#welcome.out{clip-path:circle(0% at 50% 50%);transition:clip-path .95s cubic-bezier(.7,0,.85,.4)}
+#welcome.out .wl-mission{opacity:0;transition:opacity .3s}
+@keyframes wlUp{to{opacity:1;transform:none}}
+@keyframes wlFloat{50%{transform:translateY(-10px)}}
+@keyframes wlGlow{to{transform:rotate(360deg)}}
+@keyframes wlSpin{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes wlCounterSpin{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+@keyframes wlRing{0%{transform:scale(1);opacity:.85}70%,100%{transform:scale(1.6);opacity:0}}
+@keyframes wlCore{50%{filter:brightness(1.4) saturate(1.15)}}
+@keyframes wlZoom{40%{opacity:1}100%{transform:scale(2.7);opacity:0;filter:blur(10px)}}
+@keyframes wlFlash{0%{opacity:0}25%{opacity:1}100%{opacity:0}}
+@keyframes wlImpact{0%{opacity:0;transform:scale(.5)}30%{opacity:1;transform:scale(1.12)}45%{transform:scale(1)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.9)}}
+@media (prefers-reduced-motion:reduce){#welcome *,#welcome *::before,#welcome *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* ═══ БУМБОКС-ПЛЕЕР: блок добавлен в конец стилей, старый код не изменён ═══ */
+.bbox-sec{padding-bottom:96px}
+.bbox{position:relative;border:1px solid rgba(255,45,120,.4);border-radius:20px;overflow:hidden;background:linear-gradient(180deg,#171c46,#0d1028);box-shadow:0 0 46px rgba(255,45,120,.16),0 0 90px rgba(37,230,198,.08)}
+.bbox::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.03) 0 1px,transparent 1px 3px)}
+.bbox-imgwrap{position:relative;padding:18px 18px 6px}
+.bbox-imgwrap::before{content:"";position:absolute;left:12%;right:12%;top:8%;bottom:22%;border-radius:40px;background:radial-gradient(60% 60% at 50% 50%,rgba(255,45,120,.34),transparent 70%);filter:blur(26px);opacity:.7;transition:opacity .4s}
+.bbox.playing .bbox-imgwrap::before{opacity:1;animation:bbGlow 2.6s ease-in-out infinite}
+.bbox-imgwrap img{position:relative;z-index:1;display:block;width:100%;height:auto;max-height:300px;object-fit:contain;border-radius:16px;filter:drop-shadow(0 14px 34px rgba(0,0,0,.6));animation:bbFloat 5.5s ease-in-out infinite}
+.bbox.playing .bbox-imgwrap img{animation:bbBeat 1.05s ease-in-out infinite}
+.bbox-nofile{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;width:100%;aspect-ratio:16/10;border:1px dashed rgba(255,255,255,.25);border-radius:16px;background:repeating-linear-gradient(135deg,rgba(255,255,255,.03) 0 12px,transparent 12px 24px);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.16em;color:rgba(170,179,214,.7);text-align:center;padding:16px}
+/* дисплей плеера */
+.bb-disp{position:relative;z-index:1;margin:8px 18px 0;border:1px solid rgba(37,230,198,.4);border-radius:12px;background:rgba(37,230,198,.07);padding:12px 14px;box-shadow:inset 0 0 26px rgba(37,230,198,.14)}
+.bb-disp .bb-top{display:flex;justify-content:space-between;align-items:center;gap:10px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--teal)}
+.bb-disp .bb-state{color:var(--pink)}
+.bbox.playing .bb-disp .bb-state{animation:bbBlink 1.1s steps(1,end) infinite}
+.bb-disp .bb-name{margin-top:6px;font-family:var(--disp);font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:.02em;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bb-disp .bb-time{margin-top:4px;font-family:var(--mono);font-size:11px;color:var(--fog);letter-spacing:.1em}
+.bb-disp .bb-prog{margin-top:8px;height:4px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden}
+.bb-disp .bb-prog i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--pink),var(--teal));box-shadow:0 0 10px rgba(255,45,120,.6)}
+/* точки-индикаторы треков */
+.bb-dots{display:flex;gap:6px;justify-content:center;margin-top:10px}
+.bb-dots i{width:22px;height:4px;border-radius:99px;background:rgba(255,255,255,.16);transition:.25s}
+.bb-dots i.on{background:var(--pink);box-shadow:0 0 10px rgba(255,45,120,.8);width:30px}
+/* клавиши */
+.bb-keys{display:flex;align-items:center;justify-content:center;gap:10px;padding:16px 18px 18px}
+.bb-key{width:52px;height:52px;border-radius:14px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.03));display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s,box-shadow .2s,border-color .2s,color .2s}
+.bb-key .ic{width:22px;height:22px}
+.bb-key:hover{border-color:rgba(37,230,198,.55);color:var(--teal)}
+.bb-key:active{transform:translateY(2px) scale(.97)}
+.bb-key.main{width:74px;height:74px;border-radius:99px;color:#fff;border-color:rgba(255,45,120,.7);background:radial-gradient(circle at 50% 35%,#ff5c96,#ff2d78 55%,#a90f4b);box-shadow:0 0 26px rgba(255,45,120,.5),inset 0 -4px 10px rgba(0,0,0,.35)}
+.bb-key.main .ic{width:28px;height:28px}
+.bb-key.main:hover{color:#fff;box-shadow:0 0 34px rgba(255,45,120,.75)}
+.bb-key.stop{border-color:rgba(255,138,61,.5);color:var(--tango)}
+.bb-key.stop:hover{border-color:rgba(255,138,61,.9);color:var(--tango);box-shadow:0 0 18px rgba(255,138,61,.35)}
+.bb-cap{margin-top:10px;text-align:center;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.16em;color:rgba(170,179,214,.55)}
+@keyframes bbGlow{50%{opacity:.45}}
+@keyframes bbFloat{50%{transform:translateY(-6px)}}
+@keyframes bbBeat{0%,100%{transform:scale(1)}50%{transform:scale(1.022)}}
+@keyframes bbBlink{50%{opacity:.25}}
+
+/* архив фотографий: карточка-заглушка, если файл фото не найден */
+.ph-fb{width:176px;flex:none;aspect-ratio:3/4;border:1px dashed rgba(255,255,255,.2);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:repeating-linear-gradient(135deg,rgba(255,255,255,.03) 0 10px,transparent 10px 20px);color:rgba(170,179,214,.6);scroll-snap-align:start}
+.ph-fb .ic{width:22px;height:22px}
+.ph-fb p{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.16em;text-align:center;padding:0 10px}
+</style>
+<base target="_blank">
+</head>
+<body>
+
+<!-- Спрайт иконок (штриховые, собственные) -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M6 14l6-6 6 6"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3.5L22 20Hz"/><path d="M12 10v4.5"/><path d="M12 17.6v.01"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11.5V17"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></symbol>
+  <symbol id="i-nav" viewBox="0 0 24 24"><path d="M21 3L3 10.5l7.5 3L13.5 21z"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4L11 13"/><path d="M18 13.5V20H4V6h6.5"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.6-3.8 4.8-6 8-6s6.4 2.2 8 6"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="15" rx="2"/><path d="M4 10.5h16M8.5 3v5M15.5 3v5"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11M6.5 10.5L12 16l5.5-5.5"/><path d="M5 20h14"/></symbol>
+  <symbol id="i-qr" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5"/><rect x="13.5" y="4" width="6.5" height="6.5"/><rect x="4" y="13.5" width="6.5" height="6.5"/><path d="M13.5 13.5h3v3h-3z"/><path d="M20 20h.01M17 20h.01M20 17h.01"/></symbol>
+  <symbol id="i-bed" viewBox="0 0 24 24"><path d="M3 6v13"/><path d="M21 19v-5a3 3 0 0 0-3-3H10v4"/><path d="M3 15h18"/><path d="M6.5 11V9.5H9V11"/></symbol>
+  <symbol id="i-glass" viewBox="0 0 24 24"><path d="M8 3h8v4.5a4 4 0 0 1-8 0z"/><path d="M12 11.5V18"/><path d="M8.5 21h7"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.8-3.4 7.8-8 9-4.6-1.2-8-4.2-8-9V6z"/><path d="M9 12l2 2 4-4.5"/></symbol>
+  <symbol id="i-train" viewBox="0 0 24 24"><rect x="6" y="3.5" width="12" height="13" rx="2.5"/><path d="M6 11h12"/><path d="M9.5 20l-1.5 2M14.5 20l1.5 2"/><path d="M9.5 14h.01M14.5 14h.01"/></symbol>
+  <symbol id="i-bus" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="12.5" rx="3"/><path d="M5 11h14"/><path d="M8 20l1.2-2.5M16 20l-1.2-2.5"/><path d="M9 14.5h.01M15 14.5h.01"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7"/><path d="M6.5 9.5V20h11V9.5"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.7-6.5-10a6.5 6.5 0 0 1 13 0c0 4.3-6.5 10-6.5 10z"/><circle cx="12" cy="11" r="2.2"/></symbol>
+  <symbol id="i-cross" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5"/><path d="M12 2.5V6M12 18v3.5M2.5 12H6M18 12h3.5"/></symbol>
+  <symbol id="i-snd" viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L13 19V5L7.5 9.5z"/><path d="M16.5 9a5 5 0 0 1 0 6"/><path d="M19 7a8 8 0 0 1 0 10"/></symbol>
+  <symbol id="i-mute" viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L13 19V5L7.5 9.5z"/><path d="M17 9.5l5 5M22 9.5l-5 5"/></symbol>
+  <symbol id="i-img" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="M3.5 15.5l4.5-4.5 5 5"/><path d="M14 13.5l2.5-2.5 4 4"/></symbol>
+</svg>
+
+<div class="fx" aria-hidden="true"><div class="vig"></div></div>
+
+<!-- ═══ WELCOME SCREEN: только джойстик и кнопка PLAY ═══ -->
+<div id="welcome" role="dialog" aria-label="Экран запуска миссии Vice Lake">
+  <div class="wl-inner">
+    <div class="wl-pad" id="wlPad">
+      <img src="neon-gamepad.jpg" alt="Неоновый джойстик Vice Lake"/>
+      <!-- Кнопка PLAY: позиция на фото настраивается через --play-x / --play-y / --play-size -->
+      <button class="wl-play" id="wlPlay" type="button" style="--play-x:50%;--play-y:43%;--play-size:27%;--play-spin:7s" aria-label="PLAY — начать миссию">
+        <svg viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+          <defs>
+            <radialGradient id="wlPlayCore" cx="50%" cy="40%" r="70%">
+              <stop offset="0%" stop-color="#ff7aa8"/><stop offset="55%" stop-color="#ff2d78"/><stop offset="100%" stop-color="#a90f4b"/>
+            </radialGradient>
+          </defs>
+          <circle class="ring" cx="100" cy="100" r="84" fill="none" stroke="#ff2d78" stroke-width="3"/>
+          <circle cx="100" cy="100" r="76" fill="rgba(10,12,32,.55)" stroke="rgba(255,255,255,.28)" stroke-width="1.5"/>
+          <g class="core">
+            <circle cx="100" cy="100" r="64" fill="url(#wlPlayCore)" stroke="#fff" stroke-opacity=".9" stroke-width="3"/>
+            <path d="M87 70 L87 118 L129 94 Z" fill="#fff"/>
+            <text x="100" y="146" text-anchor="middle" font-family="'JetBrains Mono',ui-monospace,Consolas,monospace" font-size="24" font-weight="700" letter-spacing="4" fill="#fff">PLAY</text>
+          </g>
+        </svg>
+      </button>
+    </div>
+    <p class="wl-cta">Жми на <b>«play»</b> и присоединяйся</p>
+  </div>
+  <div class="wl-flash" aria-hidden="true"></div>
+  <div class="wl-mission" id="wlMission" aria-hidden="true"><span>MISSION</span><span>START</span></div>
+</div>
+
+<!-- Шапка -->
+<header class="topbar">
+  <div class="topin">
+    <a href="#hero" class="logo" data-go="hero" aria-label="Vice Lake — наверх">
+      <b>Санкт- Сити </b><i>://</i><u>Илья26</u><span class="dotpulse" aria-hidden="true"></span>
+    </a>
+    <div class="topbtns">
+      <button class="iconbtn" id="sndBtn" aria-pressed="false" aria-label="Включить фоновый звук">
+        <svg class="ic" id="sndOffIco" aria-hidden="true"><use href="#i-mute"/></svg>
+        <svg class="ic" id="sndOnIco" aria-hidden="true" style="display:none"><use href="#i-snd"/></svg>
+      </button>
+      <button class="iconbtn" id="menuBtn" aria-label="Открыть меню" aria-expanded="false">
+        <svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Меню -->
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Навигация по миссии">
+  <div class="mhead">
+    <p class="kicker" style="margin:0">// NAVIGATION</p>
+    <button class="iconbtn" id="menuClose" aria-label="Закрыть меню"><svg class="ic" aria-hidden="true"><use href="#i-close"/></svg></button>
+  </div>
+  <nav class="mlinks">
+    <a href="#mission" data-go="mission"><i>01</i>Миссия</a>
+    <a href="#profile" data-go="profile"><i>02</i>Профиль</a>
+    <a href="#map" data-go="map"><i>03</i>Карта</a>
+    <a href="#briefing" data-go="briefing"><i>04</i>Брифинг</a>
+    <a href="#dress" data-go="dress"><i>05</i>Дресс-код</a>
+    <a href="#timeline" data-go="timeline"><i>06</i>Программа</a>
+    <a href="#transfer" data-go="transfer"><i>07</i>Трансфер</a>
+    <a href="#safehouse" data-go="safehouse"><i>08</i>Ночёвка</a>
+    <a href="#registration" data-go="registration"><i>09</i>Регистрация</a>
+  </nav>
+  <div class="mfoot">
+    <button class="switch" id="motionSwitch" role="switch" aria-checked="false">
+      <span>Меньше анимаций</span>
+      <span class="knobwrap" aria-hidden="true"><span class="knob"></span></span>
+    </button>
+    <p class="mnote">Вице-лейк · сезон 2026 · дело №26</p>
+  </div>
+</div>
+
+<main>
+  <!-- ═══ HERO ═══ -->
+  <section id="hero">
+    <div id="heroBg" aria-hidden="true">
+      <svg class="scene" viewBox="0 0 800 500" preserveAspectRatio="xMidYMax slice">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d1028"/><stop offset="1" stop-color="#221041"/></linearGradient>
+          <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff2d78"/><stop offset="1" stop-color="#ff8a3d"/></linearGradient>
+          <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14204d"/><stop offset="1" stop-color="#0d1028"/></linearGradient>
+          <mask id="sunStripes"><rect width="800" height="500" fill="#fff"/><rect y="255" width="800" height="3" fill="#000"/><rect y="267" width="800" height="4.6" fill="#000"/><rect y="279" width="800" height="6.2" fill="#000"/><rect y="291" width="800" height="7.8" fill="#000"/><rect y="303" width="800" height="9.4" fill="#000"/></mask>
+        </defs>
+        <rect width="800" height="500" fill="url(#sky)"/>
+        <circle cx="400" cy="252" r="92" fill="url(#sun)" opacity=".9" mask="url(#sunStripes)"/>
+        <circle cx="400" cy="252" r="104" fill="none" stroke="#ff2d78" stroke-opacity=".35"/>
+        <path d="M0 330 L40 312 L70 328 L110 306 L150 326 L200 314 L240 330 L290 310 L330 328 L360 322 L360 340 L0 340 Z" fill="#0a0d24"/>
+        <g fill="#070a1c"><rect x="470" y="268" width="34" height="72"/><rect x="510" y="248" width="26" height="92"/><rect x="542" y="284" width="40" height="56"/><rect x="588" y="238" width="22" height="102"/><rect x="616" y="276" width="34" height="64"/><rect x="656" y="292" width="46" height="48"/><rect x="708" y="258" width="24" height="82"/><rect x="738" y="286" width="62" height="54"/></g>
+        <g fill="#25e6c6" opacity=".8"><rect x="516" y="258" width="4" height="5"/><rect x="524" y="272" width="4" height="5"/><rect x="594" y="250" width="4" height="5"/><rect x="714" y="268" width="4" height="5"/></g>
+        <g fill="#ff2d78" opacity=".8"><rect x="478" y="280" width="4" height="5"/><rect x="628" y="288" width="4" height="5"/></g>
+        <line x1="600" y1="238" x2="600" y2="212" stroke="#070a1c" stroke-width="3"/>
+        <circle cx="600" cy="210" r="2.5" fill="#ff2d78"/>
+        <rect y="340" width="800" height="160" fill="url(#water)"/>
+        <line x1="0" y1="340" x2="800" y2="340" stroke="#25e6c6" stroke-opacity=".5"/>
+        <g stroke-linecap="round"><line x1="330" y1="366" x2="470" y2="366" stroke="#ff2d78" stroke-opacity=".35" stroke-width="2"/><line x1="370" y1="388" x2="430" y2="388" stroke="#ff8a3d" stroke-opacity=".3" stroke-width="2"/><line x1="300" y1="410" x2="500" y2="410" stroke="#25e6c6" stroke-opacity=".22" stroke-width="2"/><line x1="560" y1="376" x2="700" y2="376" stroke="#25e6c6" stroke-opacity=".16" stroke-width="2"/><line x1="120" y1="398" x2="220" y2="398" stroke="#25e6c6" stroke-opacity=".14" stroke-width="2"/></g>
+        <path d="M0 500 L0 430 L26 452 L40 436 L58 456 L80 440 L100 462 L120 448 L140 470 L0 500 Z" fill="#060918"/>
+        <g fill="#060918" stroke="#25e6c6" stroke-opacity=".25"><path d="M60 448 L74 420 L88 448 Z"/><path d="M104 462 L116 438 L128 462 Z"/></g>
+      </svg>
+      <div class="overlay"></div>
+    </div>
+    <div class="bignum" aria-hidden="true">26</div>
+
+    <div class="wrap hero-inner">
+      <p class="kicker"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg>Classified party file</p>
+      <h1><span class="glitch" data-text="Санкт -Петербург Сити  "> Санкт - Сити </span>
+        <span class="h-sub">Game код "ИЛЬЯ 26 "</span></h1>
+      <div class="h-meta">
+        <p>19.11.2026 · 16:00—00:00</p>
+        <p>Сестрорецк · Санкт-Петербург</p>
+      </div>
+      <div class="boot" aria-live="polite">
+        <div class="bootrow">
+          <span id="bootLbl">Инициализация ядра…</span>
+          <span id="bootPct" class="wait">25%</span>
+        </div>
+        <div class="bootbar"><i id="bootFill"></i></div>
+        <button class="btn primary block mt10" id="startBtn" disabled>Начать миссию</button>
+        <p class="hint">Вход только для членов команды</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 01 МИССИЯ ═══ -->
+  <section id="mission">
+    <div class="wrap">
+      <p class="kicker">// 01 · Входящий сигнал</p>
+      <h2>Тебе поступило секретное задание</h2>
+      <div class="card pink rv">
+        <p>19 ноября Илья отмечает свой 26-й уровень. Команда собирается на секретной базе у озера в Сестрорецке.</p>
+        <p class="mt10">Твоя задача — прибыть на место, выбрать свой street-образ и присоединиться к главной операции этой осени.</p>
+      </div>
+      <div class="acceptwrap">
+        <button class="btn primary block" id="acceptBtn">
+          <svg class="ic" id="accIcoCross" aria-hidden="true"><use href="#i-cross"/></svg>
+          <svg class="ic" id="accIcoAcc" aria-hidden="true" style="display:none"><use href="#i-check"/></svg>
+          <span id="accLbl">Принять задание</span>
+        </button>
+        <div class="stamp" id="stamp" hidden>Принято</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 02 ПРОФИЛЬ ═══ -->
+  <section id="profile">
+    <div class="wrap">
+      <p class="kicker">// 02 · Личное дело</p>
+      <h2>Профиль игрока </h2>
+      <p class="sub">Объект наблюдения — именинник. Уровень угрозы тишине: критический.</p>
+      <div class="card rv mt">
+        <p class="kicker">// Досье  №26</p>
+        <dl class="kv">
+          <div><dt>Имя </dt><dd>Илья </dd></div>
+          <div><dt>Возраст </dt><dd>26</dd></div>
+          <div><dt>Статус </dt><dd>Имениник </dd></div>
+          <div><dt>Миссия </dt><dd>День Рождение </dd></div>
+          <div><dt>Локация </dt><dd>Сестрорецк</dd></div>
+        </dl>
+        <div class="stat"><div class="srow"><span>Стиль </span><b>98%</b></div><div class="bar"><i class="fill f-teal" style="--w:98%"></i></div></div>
+        <div class="stat"><div class="srow"><span>Энергия </span><b>100%</b></div><div class="bar"><i class="fill f-pink" style="--w:100%"></i></div></div>
+        <div class="stat"><div class="srow"><span>Креативность </span><b>99%</b></div><div class="bar"><i class="fill f-viol" style="--w:99%"></i></div></div>
+        <div class="stat"><div class="srow"><span>Уровень празднования </span><b>MAX</b></div><div class="bar"><i class="fill f-tango" style="--w:100%"></i></div></div>
+        <div class="stat"><div class="srow"><span>Уровень плохого настроения </span><b>0%</b></div><div class="bar"><i class="fill f-tango" style="--w:0%"></i></div><p class="snote">Данные не обнаружены</p></div>
+      </div>
+      <p class="label">// Архив фотографий · свайп</p>
+      <div class="hscroll no-sb rv" id="photoArchive">
+        <div class="ph" style="border:none;background:none;padding:0"><img class="arch" data-files="img1,img2,img3,img4" src="img1" alt="Илья — архив 01" style="width:100%;height:100%;object-fit:cover;border-radius:12px;display:block"/></div>
+        <div class="ph" style="border:none;background:none;padding:0"><img class="arch" data-files="img1,img2,img3,img4" src="img2" alt="Илья — архив 02" style="width:100%;height:100%;object-fit:cover;border-radius:12px;display:block"/></div>
+        <div class="ph" style="border:none;background:none;padding:0"><img class="arch" data-files="img1,img2,img3,img4" src="img3" alt="Илья — архив 03" style="width:100%;height:100%;object-fit:cover;border-radius:12px;display:block"/></div>
+        <div class="ph" style="border:none;background:none;padding:0"><img class="arch" data-files="img1,img2,img3,img4" src="img4" alt="Илья — архив 04" style="width:100%;height:100%;object-fit:cover;border-radius:12px;display:block"/></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 03 КАРТА ═══ -->
+  <section id="map">
+    <div class="wrap">
+      <p class="kicker">// 03 · Навигация</p>
+      <h2>Карта миссии </h2>
+      <p class="sub">Собственная схема операции: от города — вдоль залива — к секретной базе у озера.</p>
+      <div class="mapwrap rv mt">
+        <svg class="mapsvg" viewBox="0 0 360 380" role="img" aria-label="Схема маршрута: Санкт-Петербург — метро Чёрная речка — Сестрорецк — база у озера">
+          <defs>
+            <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="rgba(255,255,255,.05)"/></pattern>
+            <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff2d78"/><stop offset=".5" stop-color="#8a5bff"/><stop offset="1" stop-color="#25e6c6"/></linearGradient>
+          </defs>
+          <rect width="360" height="380" fill="url(#grid)"/>
+          <path d="M0 322 C 70 306, 150 332, 230 318 C 295 307, 335 320, 360 314 L360 380 L0 380 Z" fill="rgba(37,230,198,.07)" stroke="rgba(37,230,198,.35)"/>
+          <text x="180" y="356" text-anchor="middle" font-size="9" letter-spacing="4" fill="#25e6c6" opacity=".7">ЗАЛИВ</text>
+          <ellipse cx="66" cy="228" rx="46" ry="30" fill="rgba(37,230,198,.09)" stroke="rgba(37,230,198,.4)"/>
+          <text x="66" y="232" text-anchor="middle" font-size="9" letter-spacing="3" fill="#25e6c6" opacity=".8">ОЗЕРО</text>
+          <path id="routePath" class="route" d="M296 62 C 268 92, 252 118, 238 148 C 222 182, 190 192, 152 208 C 128 218, 112 240, 108 270" fill="none" stroke="url(#rg)" stroke-width="2.5" stroke-linecap="round" opacity=".9"/>
+          <g id="car"><rect x="-9" y="-4" width="18" height="6" rx="2.5" fill="#25e6c6"/><path d="M-4 -4 L-2.5 -8 H3.5 L5.5 -4 Z" fill="#25e6c6" opacity=".8"/></g>
+          <circle id="classifiedRing" cx="108" cy="270" r="26" fill="none" stroke="#ff2d78" stroke-opacity=".55" stroke-dasharray="4 5"/>
+          <g class="spot" data-spot="spb" transform="translate(296 62)" role="button" aria-label="Санкт-Петербург"><circle class="ring" r="15" fill="none" stroke="#ff2d78" stroke-width="1.5"/><circle class="body" r="11" stroke-width="1.5"/><text text-anchor="middle" dy="3.5">СПБ</text></g>
+          <g class="spot on" data-spot="metro" transform="translate(238 148)" role="button" aria-label="Метро Чёрная речка"><circle class="ring" r="15" fill="none" stroke="#ff2d78" stroke-width="1.5"/><circle class="body" r="11" stroke-width="1.5"/><text text-anchor="middle" dy="3.5">М</text></g>
+          <g class="spot" data-spot="sestro" transform="translate(152 208)" role="button" aria-label="Сестрорецк"><circle class="ring" r="15" fill="none" stroke="#ff2d78" stroke-width="1.5"/><circle class="body" r="11" stroke-width="1.5"/><text text-anchor="middle" dy="3.5">С</text></g>
+          <g class="spot" data-spot="base" transform="translate(108 270)" role="button" aria-label="Vice Lake Base"><circle class="ring" r="15" fill="none" stroke="#ff2d78" stroke-width="1.5"/><circle class="body" r="11" stroke-width="1.5"/><text text-anchor="middle" dy="3.5">?</text></g>
+          <text x="288" y="40" text-anchor="middle" font-size="8.5" letter-spacing="1.5" fill="#aab3d6">САНКТ-ПЕТЕРБУРГ</text>
+          <text x="248" y="170" text-anchor="middle" font-size="8.5" letter-spacing="1" fill="#aab3d6">М. ЧЁРНАЯ РЕЧКА</text>
+          <text x="162" y="230" text-anchor="middle" font-size="8.5" letter-spacing="1.5" fill="#aab3d6">СЕСТРОРЕЦК</text>
+          <text x="118" y="298" text-anchor="middle" font-size="8.5" letter-spacing="1" fill="#ff2d78">Дачный поселок "Елки "</text>
+        </svg>
+      </div>
+      <div class="chips mt10">
+        <button class="chip spotchip" data-spot="spb" aria-pressed="false">Санкт-Петербург</button>
+        <button class="chip spotchip on" data-spot="metro" aria-pressed="true">Метро «Чёрная речка»</button>
+        <button class="chip spotchip" data-spot="sestro" aria-pressed="false">Сестрорецк</button>
+        <button class="chip spotchip" data-spot="base" aria-pressed="false">Дачный поселок " Елки "</button>
+      </div>
+      <div class="card rv mt" id="locCard">
+        <p class="kicker">// Локация </p>
+        <h3 class="locTitle" id="locTitle">Метро «Чёрная речка»</h3>
+        <p class="dim small" id="locDesc">Точка сбора трансфера. Детали отправления — в разделе «Транспорт».</p>
+      </div>
+
+      <!-- адрес: закрыт до регистрации -->
+      <div class="card pink rv mt" id="addrLocked">
+        <div class="row">
+          <p class="kicker" style="margin:0">// Целевая точка</p>
+          <svg class="ic pinkic" aria-hidden="true"><use href="#i-lock"/></svg>
+        </div>
+        <p class="classified">Точное место проведения  </p>
+        <p class="dim small">Сестрорецк, дачный посёлок «Ёлки», точный адрес доступен после регистрации</p>
+        <p class="warn-text">Точный адрес доступен только подтверждённым участникам</p>
+      </div>
+      <div class="card rv mt" id="addrOpen" hidden></div>
+    </div>
+  </section>
+
+  <!-- ═══ 04 БРИФИНГ ═══ -->
+  <section id="briefing">
+    <div class="wrap">
+      <p class="kicker">// 04 · Сводка операции</p>
+      <h2>Параметры миссии </h2>
+      <p class="sub">Все параметры операции — на одном экране. Запомни дедлайн: он не сдвигается.</p>
+      <div class="card rv mt">
+        <p class="kicker">// Параметры</p>
+        <dl class="kv">
+          <div><dt>Событие </dt><dd>День рождения Ильи </dd></div>
+          <div><dt>Дата </dt><dd>19.11.2026</dd></div>
+          <div><dt>Время </dt><dd>16:00—00:00</dd></div>
+          <div><dt>Локация  </dt><dd>Сестрорецк </dd></div>
+          <div><dt>Точная точка </dt><dd>Дачный поселок "Елки "</dd></div>
+          <div><dt>Дресс-код </dt><dd>Уличная, удобная ,теплая </dd></div>
+          <div><dt>Колличество гостей </dt><dd>30–40 участников </dd></div>
+        </dl>
+      </div>
+      <div class="dlbox rv">
+        <p class="t"><svg class="ic" aria-hidden="true"><use href="#i-warn"/></svg>Регистрация до :</p>
+        <p class="d">19.11.2026 — 12:00</p>
+        <p class="dim small" style="margin-top:4px">Регистрация закрывается за 4 часа до начала вечеринки.</p>
+      </div>
+      <div class="mt rv">
+        <p class="cdlabel">До закрытия набора · 12:00</p>
+        <div class="cd pink" id="cdDeadline"></div>
+      </div>
+      <div class="mt rv">
+        <p class="cdlabel">До начала операции · 16:00</p>
+        <div class="cd" id="cdStart"></div>
+      </div>
+      <div id="briefClosed" hidden class="mt">
+        <p class="dim small center">Опоздал с регистрацией? Напиши организатору — вдруг освободится место.</p>
+        <button class="btn ghost block mt10 tg"><svg class="ic" aria-hidden="true"><use href="#i-nav"/></svg>Связаться с организатором</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 05 ДРЕСС-КОД ═══ -->
+  <section id="dress">
+    <div class="wrap">
+      <p class="kicker">// 05 · Внешний вид</p>
+      <h2>Стиль одежды </h2>
+      <p class="sub rv">Выбирай свой street-образ: худи, бомбер, джинсы, широкие брюки, кроссовки, кепка, цепи и яркие детали. Необязательно копировать конкретного персонажа — достаточно добавить в образ немного городского стиля.</p>
+      <div class="hscroll no-sb rv">
+        <div class="card dcard"><span class="num">01</span><h3>Худи </h3><p>Худи оверсайз и широкие джинсы — базовый слой уличного комплекта.</p></div>
+        <div class="card dcard"><span class="num">02</span><h3>Бомберы </h3><p>Бомбер поверх худи — спасение от ноябрьского ветра с залива.</p></div>
+        <div class="card dcard"><span class="num">03</span><h3>Обувь </h3><p>Кроссовки с характером: у озера будем гулять до полуночи.</p></div>
+        <div class="card dcard"><span class="num">04</span><h3>Дресс- пати </h3><p>Тёмный total look — для финального уровня после заката.</p></div>
+        <div class="card dcard"><span class="num">05</span><h3>яркий акссесуар </h3><p>Одна яркая деталь: цепь, кепка, шнурки — неон, заметный в темноте.</p></div>
+      </div>
+      <div class="warnbox rv mt">
+        <svg class="ic" aria-hidden="true"><use href="#i-warn"/></svg>
+        <p>Стиль — street. Обувь — удобная. Куртка — тёплая. На улице ноябрь, рядом озеро и загородная территория.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 06 ПРОГРАММА ═══ -->
+  <section id="timeline">
+    <div class="wrap">
+      <p class="kicker">// 06 · Расписание</p>
+      <h2>Тайминг мероприятия </h2>
+      <p class="sub">Восемь часов операции. Тайминги живые — но финал в полночь не обсуждается.</p>
+      <ol class="tl mt">
+        <li class="rv"><p class="t-time">16:00</p><p class="t-title">Сбор команды</p></li>
+        <li class="rv"><p class="t-time">16:30</p><p class="t-title">Welcome-зона</p></li>
+        <li class="rv"><p class="t-time">17:00</p><p class="t-title">Фотосессия </p></li>
+        <li class="rv"><p class="t-time">18:00</p><p class="t-title">Праздничный ужин</p></li>
+        <li class="rv"><p class="t-time">19:30</p><p class="t-title">Игровые задания и конкурсы</p></li>
+        <li class="rv"><p class="t-time">21:00</p><p class="t-title">Зажигательные танцы  и фотографии</p></li>
+        <li class="rv"><p class="t-time">22:00</p><p class="t-title">Торт и поздравления</p></li>
+        <li class="rv"><p class="t-time">23:00</p><p class="t-title">Финальный уровень</p></li>
+        <li class="last rv"><p class="t-time">00:00</p><p class="t-title">Завершение основной операции</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ═══ 07 ТРАНСФЕР ═══ -->
+  <section id="transfer">
+    <div class="wrap">
+      <p class="kicker">// 07 · Логистика</p>
+      <h2>Трансфер </h2>
+      <p class="sub rv">Для части команды будет организован трансфер от метро «Чёрная речка» до места проведения и обратно. Укажи необходимость трансфера в регистрационной форме.</p>
+      <div class="card rv mt">
+        <p class="kicker">// Маршрут трансфера</p>
+        <div class="diagram" aria-hidden="true">
+          <span class="node teal"><svg class="ic"><use href="#i-train"/></svg></span>
+          <span class="dash"></span>
+          <svg class="ic busic"><use href="#i-bus"/></svg>
+          <span class="dash"></span>
+          <span class="node pink"><svg class="ic"><use href="#i-home"/></svg></span>
+        </div>
+        <dl class="kv mt">
+          <div><dt>Отправление</dt><dd>Метро «Чёрная речка»</dd></div>
+          <div><dt>Статус</dt><dd style="color:var(--tango)">Время отправления уточняется</dd></div>
+        </dl>
+        <button class="btn primary block mt" id="btnTransferForm">Указать трансфер в форме</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 08 НОЧЁВКА ═══ -->
+  <section id="safehouse">
+    <div class="wrap">
+      <p class="kicker">// 08 · Safe house</p>
+      <h2>Ночёвка на базе</h2>
+      <p class="sub rv">После завершения основной операции доступно 5 мест для ночёвки. Количество мест ограничено.</p>
+      <div class="card rv mt">
+        <p class="kicker">// Свободные места</p>
+        <div class="beds" aria-label="Свободно мест: 5 из 5">
+          <svg class="ic" aria-hidden="true"><use href="#i-bed"/></svg>
+          <svg class="ic" aria-hidden="true"><use href="#i-bed"/></svg>
+          <svg class="ic" aria-hidden="true"><use href="#i-bed"/></svg>
+          <svg class="ic" aria-hidden="true"><use href="#i-bed"/></svg>
+          <svg class="ic" aria-hidden="true"><use href="#i-bed"/></svg>
+          <b>5/5</b>
+        </div>
+        <div class="bar mt10" role="progressbar" aria-valuenow="5" aria-valuemin="0" aria-valuemax="5" aria-label="Свободные места для ночёвки"><i class="fill f-teal" style="--w:100%"></i></div>
+        <p class="snote">Варианты размещения уточняются</p>
+        <p class="label" style="margin-top:16px">Вопрос в форме — «Нужна ли тебе ночёвка?»</p>
+        <ul class="opts">
+          <li>Да, бронирую место</li>
+          <li>Возможно, уточню позже</li>
+          <li>Нет, уеду после вечеринки</li>
+        </ul>
+        <button class="btn primary block mt" id="btnOvernight">Запросить ночёвку</button>
+        <div class="warnbox mt10" style="padding:12px">
+          <svg class="ic" aria-hidden="true"><use href="#i-warn"/></svg>
+          <p class="small">Место подтверждается организатором.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 09 БЕЗОПАСНОСТЬ ═══ -->
+  <section id="safety">
+    <div class="wrap">
+      <p class="kicker">// 09 · Зона ответственности</p>
+      <h2>Алкоголь и безопасность</h2>
+      <div class="card rv mt">
+        <div class="row" style="align-items:flex-start;justify-content:flex-start;gap:14px">
+          <svg class="ic" style="width:26px;height:26px;color:var(--teal)" aria-hidden="true"><use href="#i-glass"/></svg>
+          <p>Алкогольная зона будет доступна совершеннолетним участникам. За безопасный маршрут домой отвечает каждый член команды.</p>
+        </div>
+        <p class="label" style="margin-top:16px">// Дорога домой — варианты в форме</p>
+        <div class="chips">
+          <span class="chip">Трансфер</span><span class="chip">Такси</span><span class="chip">Личный авто и трезвый водитель</span><span class="chip">Остаюсь ночевать</span><span class="chip">Пока не решил</span>
+        </div>
+        <p class="dim small mt" style="display:flex;gap:8px;align-items:flex-start">
+          <svg class="ic" style="color:var(--teal);margin-top:2px" aria-hidden="true"><use href="#i-shield"/></svg>
+          Вопросы про алкоголь и обратную дорогу включены в регистрационную форму — ответь честно, это помогает организаторам подготовиться.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 10 РЕГИСТРАЦИЯ ═══ -->
+  <section id="registration">
+    <div class="wrap">
+      <p class="kicker">// 10 · Вербовка</p>
+      <h2>Регистрация </h2>
+      <p class="sub">Подтверди участие до 19 ноября, 12:00. После заполнения формы ты получишь точный адрес базы и информацию по трансферу.</p>
+
+      <div id="regDefault">
+        <div class="rv mt">
+          <button class="btn primary block" id="btnOpenForm" style="min-height:56px">
+            <svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg>Заполнить форму
+          </button>
+          <button class="btn ghost block mt10" id="btnAlready">Я уже зарегистрировался</button>
+          <p class="hint mt10">Форма откроется в новой вкладке · займёт 2 минуты</p>
+        </div>
+        <details class="qbox rv">
+          <summary>Что спросит форма · 13 вопросов</summary>
+          <ol class="q">
+            <li>Имя и фамилия</li><li>Номер телефона</li><li>Telegram</li>
+            <li>Будешь ли ты участвовать?</li><li>Нужен ли трансфер?</li><li>Количество пассажиров</li>
+            <li>Нужна ли ночёвка?</li><li>Есть ли аллергии?</li><li>Есть ли ограничения в питании?</li>
+            <li>Планируешь ли употреблять алкоголь?</li><li>Как планируешь добираться после вечеринки?</li>
+            <li>Можно ли использовать фотографии с твоим участием?</li><li>Дополнительный комментарий</li>
+          </ol>
+        </details>
+      </div>
+
+      <div class="card rv" id="regDone" hidden>
+        <p class="doneTitle"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>Ты в команде</p>
+        <p class="dim small mt10"><span id="doneHi"></span>Твой пропуск с адресом и кнопками маршрута — ниже.</p>
+        <button class="btn primary block mt" data-go="pass">Открыть мой пропуск</button>
+      </div>
+
+      <div class="card pink" id="regClosed" hidden>
+        <p class="closedTitle">Набор команды завершён</p>
+        <p class="dim small mt10">Регистрация закрылась 19 ноября в 12:00. Если что-то срочное — напиши организатору напрямую.</p>
+        <button class="btn ghost block mt tg"><svg class="ic" aria-hidden="true"><use href="#i-nav"/></svg>Связаться с организатором</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 11 ПРОПУСК ═══ -->
+  <section id="pass" hidden>
+    <div class="wrap">
+      <p class="kicker">// 11 · Пропуск участника</p>
+      <h2>Миссия принята</h2>
+      <p class="sub">Покажи этот пропуск на входе на базу. Сохрани его заранее — связи у озера может не быть.</p>
+      <div class="pass rv mt">
+        <div class="top" aria-hidden="true"></div>
+        <div class="pin">
+          <div class="row" style="align-items:flex-start">
+            <div>
+              <h3>Пропуск миссии </h3>
+              <p class="kicker plabel">Пропуск  · Санкт - Сити</p>
+            </div>
+            <svg class="ic okic" style="width:26px;height:26px" aria-hidden="true"><use href="#i-check"/></svg>
+          </div>
+          <dl class="kv mt">
+            <div><dt>Гость</dt><dd id="passName">GUEST</dd></div>
+            <div><dt>День Рождение </dt><dd>Илья 26</dd></div>
+            <div><dt>Дата </dt><dd>19.11.2026</dd></div>
+            <div><dt>Время </dt><dd>16:00—00:00</dd></div>
+            <div><dt>Локация </dt><dd>Сестрорецк </dd></div>
+            <div><dt>Дресс - код </dt><dd>Уличная ,удобная </dd></div>
+            <div><dt>Статус </dt><dd class="val ok">CONFIRMED</dd></div>
+            <div><dt>Точная точка </dt><dd class="val locked" id="passLoc">CLASSIFIED</dd></div>
+          </dl>
+        </div>
+        <div style="padding:0 20px 20px">
+          <div class="barcode" id="barcode" aria-hidden="true"></div>
+          <p class="bcode-cap">Санкт - Сити Илья 26  · Сестрорецк " Ёлки " · 19.11.2026</p>
+        </div>
+      </div>
+      <div class="stack rv mt">
+        <button class="btn ghost block" id="btnReveal">
+          <svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg>Открыть точный адрес
+        </button>
+        <button class="btn primary block" id="btnRoute">
+          <svg class="ic" aria-hidden="true"><use href="#i-nav"/></svg>Построить маршрут
+        </button>
+        <button class="btn ghost block" id="btnIcs">
+          <svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg>Добавить в календарь
+        </button>
+        <button class="btn ghost block" id="btnSave">
+          <svg class="ic" aria-hidden="true"><use href="#i-down"/></svg>Сохранить пропуск
+        </button>
+        <button class="btn ghost block tg">
+          <svg class="ic" aria-hidden="true"><use href="#i-nav"/></svg>Связаться с организатором
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 12 QR ═══ -->
+  <section id="qr" style="padding-bottom:96px">
+    <div class="wrap">
+      <div class="card rv">
+        <p class="kicker"><svg class="ic" aria-hidden="true"><use href="#i-qr"/></svg>//Твой QR - код </p>
+        <div class="qrbox" id="qrBox"><img id="qrImg" alt="QR-код приглашения Санкт - Сити . Илья 26 " width="176" height="176"/></div>
+        <div class="qrfall" id="qrFallback" hidden>QR появится в финальной сборке проекта</div>
+        <p class="dim small center mt">Отсканируй, чтобы открыть приглашение</p>
+        <p class="qrurl" id="qrUrl"></p>
+        <button class="btn ghost block mt" id="qrCopy">
+          <svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg>Скопировать ссылку
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 13 БУМБОКС (добавлено в конец, старый код не изменён) ═══ -->
+  <section id="boombox" class="bbox-sec">
+    <div class="wrap">
+      <p class="kicker"><svg class="ic" aria-hidden="true"><use href="#i-snd"/></svg>// 13 · Boombox</p>
+      <h2>Кассетный бумбокс</h2>
+      <p class="sub">Саундтрек операции. Крути стрелки — переключай трек, жми PLAY, чтобы врубить.</p>
+      <div class="bbox rv" id="bbox">
+        <div class="bbox-imgwrap">
+          <img src="boomboks" alt="Неоновый бумбокс Санкт-Сити" id="bbImg"/>
+        </div>
+        <div class="bb-disp">
+          <div class="bb-top">
+            <span id="bbNum">Track 01/04</span>
+            <span class="bb-state" id="bbState">Stop</span>
+          </div>
+          <p class="bb-name" id="bbName">—</p>
+          <p class="bb-time" id="bbTime">00:00 / 00:00</p>
+          <div class="bb-prog" aria-hidden="true"><i id="bbProg"></i></div>
+          <div class="bb-dots" id="bbDots" aria-hidden="true"></div>
+        </div>
+        <div class="bb-keys">
+          <button class="bb-key" id="bbPrev" type="button" aria-label="Предыдущий трек">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 5.5v13L9.5 12z" fill="currentColor" stroke="none"/><path d="M5.5 5v14"/></svg>
+          </button>
+          <button class="bb-key main" id="bbPlay" type="button" aria-label="Play — запустить трек">
+            <svg class="ic" id="bbPlayIco" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor" stroke="none"/></svg>
+            <svg class="ic" id="bbPauseIco" viewBox="0 0 24 24" aria-hidden="true" style="display:none"><path d="M9 5.5v13M15 5.5v13" stroke-width="3.2"/></svg>
+          </button>
+          <button class="bb-key stop" id="bbStop" type="button" aria-label="Stop — остановить трек">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="1.5" fill="currentColor" stroke="none"/></svg>
+          </button>
+          <button class="bb-key" id="bbNext" type="button" aria-label="Следующий трек">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5v13L14.5 12z" fill="currentColor" stroke="none"/><path d="M18.5 5v14"/></svg>
+          </button>
+        </div>
+      </div>
+      <p class="bb-cap">Boombox · 4 tracks · Side A</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="fcap">Санкт Сити  // Game код Илья  26</p>
+    <p class="fsub">Сестрорецк · 19 ноября 2026 · 16:00—00:00</p>
+    <button class="btn ghost tg" style="margin:16px auto 0;max-width:280px;width:100%">
+      <svg class="ic" aria-hidden="true"><use href="#i-nav"/></svg>Вопрос организатору
+    </button>
+    <p class="fnote">Сделано для команды · не является официальным продуктом каких-либо игр</p>
+  </div>
+</footer>
+
+<!-- Sticky-кнопка регистрации -->
+<div class="cta" id="cta">
+  <a href="#registration" class="btn primary block spread" id="ctaLink">
+    <span class="rowgap"><svg class="ic" aria-hidden="true"><use href="#i-user"/></svg>Регистрация</span>
+    <span class="cta-note">до 19.11 · 12:00</span>
+  </a>
+</div>
+
+<!-- Наверх -->
+<button class="toTop" id="toTop" aria-label="Наверх"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg></button>
+
+<!-- Тосты -->
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<!-- Модалка «я уже зарегистрировался» -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Подтверждение регистрации">
+  <div class="mbox">
+    <div class="row">
+      <p class="kicker" style="margin:0">// Проверка личности</p>
+      <button class="xbtn" id="mClose" aria-label="Закрыть окно"><svg class="ic" aria-hidden="true"><use href="#i-close"/></svg></button>
+    </div>
+    <h3>Я уже в деле</h3>
+    <p class="dim small mt10">Введи имя и фамилию так же, как в форме, — так организатор найдёт тебя в списке.</p>
+    <input class="field" id="mName" placeholder="Имя и фамилия" aria-label="Имя и фамилия"/>
+    <p class="err" id="mErr" role="alert"></p>
+    <button class="btn primary block mt10" id="mOk">
+      <svg class="ic" aria-hidden="true"><use href="#i-nav"/></svg>Подтвердить
+    </button>
+  </div>
+</div>
+
+<noscript><p style="padding:80px 24px;text-align:center;font-family:monospace">Для работы миссии нужен включённый JavaScript.</p></noscript>
+
+<script>
+(function(){
+"use strict";
+
+/* ══════════ НАСТРОЙКИ МЕРОПРИЯТИЯ — замени значения перед отправкой гостям ══════════ */
+var cfg={
+  googleFormUrl:"",                                // ссылка на Google Forms; если пусто — работает встроенная регистрация
+  exactAddress:"Сестрорецк, дачный посёлок «Ёлки» — точный участок сообщим в чате команды", // адрес базы
+  latitude:"60.0833",longitude:"29.9667",          // координаты Сестрорецка
+  yandexMapsUrl:"https://yandex.ru/maps/?rtext=~60.0833,29.9667&rtt=auto",
+  googleMapsUrl:"https://www.google.com/maps/dir/?api=1&destination=60.0833,29.9667",
+  publicInvitationUrl:"https://alexander1404.github.io/ilya-26/",     // адрес страницы на GitHub Pages (используется для QR-кода и кнопки «Скопировать ссылку»)
+  organizerTelegram:"",                            // ник организатора в Telegram без @; пусто — кнопка подскажет
+  registrationDeadline:"2026-11-19T12:00:00+03:00",
+  startDateTime:"2026-11-19T16:00:00+03:00",
+  birthdayPhoto:"bg-city.jpg"                      // фоновое фото hero; пусто = только векторная сцена
+};
+function isPh(v){return !v||String(v).indexOf("REPLACE_WITH_")===0||v==="CLASSIFIED";}
+
+/* ══════════ утилиты ══════════ */
+function $(s,r){return (r||document).querySelector(s);}
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c];});}
+function lsGet(k,d){try{var r=localStorage.getItem(k);return r!==null?JSON.parse(r):d;}catch(e){return d;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function pad(n){return (n<10?"0":"")+n;}
+
+var state=lsGet("vl26:state",{registered:false,playerName:"",addressConfirmed:false});
+var accepted=lsGet("vl26:accepted",false);
+var lessMotion=!!lsGet("vl26:lessMotion",false);
+var deadlinePassed=false;
+
+/* ══════════ тосты ══════════ */
+function toast(msg,tone){
+  tone=tone||"info";
+  var box=$("#toasts");if(!box)return;
+  var t=document.createElement("div");
+  t.className="toast "+tone;
+  var ico=tone==="ok"?"i-check":tone==="warn"?"i-warn":"i-info";
+  t.innerHTML='<svg class="ic" aria-hidden="true"><use href="#'+ico+'"/></svg><span></span>';
+  t.lastChild.textContent=msg;
+  box.appendChild(t);
+  requestAnimationFrame(function(){t.classList.add("show");});
+  setTimeout(function(){t.classList.remove("show");setTimeout(function(){t.remove();},300);},3200);
+}
+window.addEventListener("error",function(e){toast("Ошибка: "+(e.message||"скрипт"),"warn");});
+
+/* ══════════ навигация ══════════ */
+function go(id){
+  var el=document.getElementById(id);if(!el)return;
+  try{el.scrollIntoView({behavior:lessMotion?"auto":"smooth"});}catch(e){el.scrollIntoView();}
+}
+var menu=$("#menu");
+function openMenu(){menu.classList.add("open");$("#menuBtn").setAttribute("aria-expanded","true");}
+function closeMenu(){menu.classList.remove("open");$("#menuBtn").setAttribute("aria-expanded","false");}
+$("#menuBtn").addEventListener("click",openMenu);
+$("#menuClose").addEventListener("click",closeMenu);
+$$("[data-go]").forEach(function(a){
+  a.addEventListener("click",function(ev){ev.preventDefault();closeMenu();go(a.getAttribute("data-go"));});
+});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){closeMenu();closeModal();}});
+
+/* тумблер «меньше анимаций» */
+function applyMotion(){document.documentElement.classList.toggle("less-motion",lessMotion);}
+var sw=$("#motionSwitch");
+function renderSwitch(){sw.setAttribute("aria-checked",lessMotion?"true":"false");}
+sw.addEventListener("click",function(){
+  lessMotion=!lessMotion;lsSet("vl26:lessMotion",lessMotion);applyMotion();renderSwitch();
+  toast(lessMotion?"Анимации уменьшены":"Анимации включены","info");
+});
+applyMotion();renderSwitch();
+
+/* ══════════ звук (WebAudio, только по кнопке) ══════════ */
+var sndOn=false,player=null,rampIv=null;
+function updSnd(){
+  var b=$("#sndBtn");b.classList.toggle("on",sndOn);b.setAttribute("aria-pressed",String(sndOn));
+  b.setAttribute("aria-label",sndOn?"Выключить фоновый звук":"Включить фоновый звук");
+  $("#sndOnIco").style.display=sndOn?"":"none";
+  $("#sndOffIco").style.display=sndOn?"none":"";
+}
+function toggleSnd(force){
+  var want=(typeof force==="boolean")?force:!sndOn;
+  if(!player){
+    if(!want)return false;
+    player=new Audio("ilya-theme.mp3");player.loop=true;player.volume=0;
+  }
+  if(want===sndOn&&player)return sndOn;
+  if(rampIv){clearInterval(rampIv);rampIv=null;}
+  if(want){
+    var done=function(){
+      sndOn=true;updSnd();
+      var v=0;player.volume=0;
+      rampIv=setInterval(function(){
+        if(!sndOn||v>=.55){player.volume=.55;clearInterval(rampIv);rampIv=null;return;}
+        v+=.028;player.volume=Math.min(.55,v);
+      },60);
+      toast("В эфире: тема операции ILYA 26","ok");
+    };
+    var fail=function(){toast("Не удалось запустить звук — проверь файл ilya-theme.mp3 рядом с index.html","warn");};
+    var p=player.play();
+    if(p&&p.then)p.then(done,fail);else done();
+  }else{
+    player.pause();sndOn=false;updSnd();
+  }
+  return sndOn;
+}
+window.vlSndToggle=toggleSnd;
+$("#sndBtn").addEventListener("click",function(){toggleSnd();});
+updSnd();
+
+/* ══════════ hero: загрузка миссии ══════════ */
+var steps=["Инициализация ядра…","Дешифровка дела №26…","Загрузка активов…","Доступ разрешён"];
+var step=0,launched=false;
+var bootLbl=$("#bootLbl"),bootPct=$("#bootPct"),bootFill=$("#bootFill"),startBtn=$("#startBtn");
+function paintBoot(){
+  var pct=Math.round((step+1)/steps.length*100);
+  bootLbl.textContent=launched?"Mission initialized":steps[step];
+  bootPct.textContent=launched?"OK":(step===steps.length-1?"Ready":pct+"%");
+  bootPct.className=(launched||step===steps.length-1)?"ok":"wait";
+  bootFill.style.width=(launched?100:pct)+"%";
+  if(launched)startBtn.disabled=true;else startBtn.disabled=step!==steps.length-1;
+}
+paintBoot();
+var bootIv=setInterval(function(){
+  step=Math.min(step+1,steps.length-1);paintBoot();
+  if(step===steps.length-1)clearInterval(bootIv);
+},420);
+startBtn.addEventListener("click",function(){
+  if(launched||step!==steps.length-1)return;
+  launched=true;paintBoot();
+  setTimeout(function(){go("mission");},250);
+});
+/* фоновое фото hero — только если путь реальный */
+if(!isPh(cfg.birthdayPhoto)){
+  var im=document.createElement("img");
+  im.className="heroPhoto";im.alt="";im.src=cfg.birthdayPhoto;
+  $("#heroBg").appendChild(im);
+}
+
+/* ══════════ принять задание ══════════ */
+var accBtn=$("#acceptBtn"),stamp=$("#stamp");
+function renderAccept(){
+  accBtn.disabled=accepted;
+  accBtn.classList.toggle("done",accepted);
+  $("#accLbl").textContent=accepted?"Задание принято":"Принять задание";
+  $("#accIcoAcc").style.display=accepted?"":"none";
+  $("#accIcoCross").style.display=accepted?"none":"";
+  stamp.hidden=!accepted;
+}
+accBtn.addEventListener("click",function(){accepted=true;lsSet("vl26:accepted",true);renderAccept();toast("Задание принято. Ждём тебя 19 ноября","ok");});
+renderAccept();
+
+/* ══════════ появление при скролле ══════════ */
+if("IntersectionObserver" in window){
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(en){if(en.isIntersecting){en.target.classList.add("in");io.unobserve(en.target);}});
+  },{threshold:.12,rootMargin:"-40px 0px"});
+  $$(".rv").forEach(function(el){io.observe(el);});
+}else{$$(".rv").forEach(function(el){el.classList.add("in");});}
+
+/* ══════════ карта ══════════ */
+var SPOTS={
+  spb:{title:"Санкт-Петербург",desc:"Стартовая точка операции. Отсюда маршрут уходит на северо-запад, вдоль залива."},
+  metro:{title:"Метро «Чёрная речка»",desc:"Точка сбора трансфера. Детали отправления — в разделе «Транспорт»."},
+  sestro:{title:"Сестрорецк",desc:"Город у залива: последний ориентир перед поворотом на дачные дороги."},
+  base:{title:"Vice Lake Base",desc:"Загородная база на берегу озера. Точный адрес раскрывается после регистрации."}
+};
+var activeSpot="metro";
+function renderSpots(){
+  $$(".spot").forEach(function(g){g.classList.toggle("on",g.getAttribute("data-spot")===activeSpot);});
+  $$(".spotchip").forEach(function(c){
+    var on=c.getAttribute("data-spot")===activeSpot;
+    c.classList.toggle("on",on);c.setAttribute("aria-pressed",String(on));
+  });
+  $("#locTitle").textContent=SPOTS[activeSpot].title;
+  $("#locDesc").textContent=SPOTS[activeSpot].desc;
+  $("#locCard").classList.toggle("pink",activeSpot==="base"&&!state.registered);
+}
+$$(".spot").forEach(function(g){g.addEventListener("click",function(){activeSpot=g.getAttribute("data-spot");renderSpots();});});
+$$(".spotchip").forEach(function(c){c.addEventListener("click",function(){activeSpot=c.getAttribute("data-spot");renderSpots();});});
+renderSpots();
+
+/* машина едет по маршруту */
+(function(){
+  var path=$("#routePath"),car=$("#car");
+  if(!path||!car||!path.getTotalLength)return;
+  var len=path.getTotalLength(),dur=9500;
+  function place(t){
+    var p=path.getPointAtLength(len*t);
+    var p2=path.getPointAtLength(Math.min(len-.5,len*t+.5));
+    var a=Math.atan2(p2.y-p.y,p2.x-p.x)*180/Math.PI;
+    car.setAttribute("transform","translate("+p.x+" "+p.y+") rotate("+a+")");
+  }
+  place(.55);
+  (function loop(){
+    if(!lessMotion)place((performance.now()%dur)/dur);
+    requestAnimationFrame(loop);
+  })();
+})();
+
+/* ══════════ таймеры ══════════ */
+function cdParts(target){
+  var t=new Date(target).getTime(),diff=t-Date.now();
+  if(!isFinite(t)||diff<=0)return null;
+  return{d:Math.floor(diff/864e5),h:Math.floor(diff/36e5)%24,m:Math.floor(diff/6e4)%60,s:Math.floor(diff/1e3)%60};
+}
+function buildCd(root){
+  root.innerHTML='<div class="cdgrid"></div>';
+  var grid=root.firstChild,out=[];
+  ["дней","часов","минут","секунд"].forEach(function(l){
+    var d=document.createElement("div");d.className="cd-cell";
+    d.innerHTML="<b>--</b><span>"+l+"</span>";grid.appendChild(d);
+    out.push(d.firstChild);
+  });
+  return out;
+}
+var cdD=buildCd($("#cdDeadline")),cdS=buildCd($("#cdStart"));
+function tickCd(){
+  var a=cdParts(cfg.registrationDeadline),b=cdParts(cfg.startDateTime);
+  if(a){cdD[0].textContent=pad(a.d);cdD[1].textContent=pad(a.h);cdD[2].textContent=pad(a.m);cdD[3].textContent=pad(a.s);}
+  else if(!$("#cdDeadline").getAttribute("data-done")){$("#cdDeadline").setAttribute("data-done","1");$("#cdDeadline").innerHTML='<div class="cd-exp pink">Набор команды завершён</div>';}
+  if(b){cdS[0].textContent=pad(b.d);cdS[1].textContent=pad(b.h);cdS[2].textContent=pad(b.m);cdS[3].textContent=pad(b.s);}
+  else if(!$("#cdStart").getAttribute("data-done")){$("#cdStart").setAttribute("data-done","1");$("#cdStart").innerHTML='<div class="cd-exp teal">Mission started</div>';}
+  var dp=!a;
+  if(dp!==deadlinePassed){deadlinePassed=dp;render();}
+}
+tickCd();setInterval(tickCd,1000);
+
+/* ══════════ адрес / карты ══════════ */
+function openUrl(u,name){
+  if(isPh(u)){toast("Ссылка на "+name+" ещё не подключена — см. настройки в начале скрипта","warn");return;}
+  window.open(u,"_blank","noopener");
+}
+function copyAddr(){
+  if(isPh(cfg.exactAddress)){toast("Адрес ещё не заполнен организатором","warn");return;}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(cfg.exactAddress).then(function(){toast("Адрес скопирован","ok");},function(){toast("Браузер не разрешил копирование","warn");});
+  }else toast("Браузер не поддерживает автокопирование","warn");
+}
+function fillAddr(){
+  var lock=$("#addrLocked"),open=$("#addrOpen");
+  if(!state.registered){lock.hidden=false;open.hidden=true;return;}
+  lock.hidden=true;open.hidden=false;
+  if(isPh(cfg.exactAddress)){
+    open.innerHTML='<p class="kicker">// Целевая точка</p><p class="classified">CLASSIFIED</p>'
+      +'<p class="dim small">Организатор ещё не заполнил точный адрес в настройках — впиши его, и он появится здесь автоматически.</p>';
+  }else{
+    var html='<p class="kicker">// Целевая точка</p><p class="addr">'+esc(cfg.exactAddress)+'</p>';
+    if(cfg.latitude&&cfg.longitude)html+='<p class="mono dim small">LAT '+esc(cfg.latitude)+' · LON '+esc(cfg.longitude)+'</p>';
+    html+='<div class="stack mt">'
+      +'<button class="btn primary block" id="btnYandex"><svg class="ic" aria-hidden="true"><use href="#i-nav"/></svg>Открыть маршрут</button>'
+      +'<button class="btn ghost block" id="btnGoogle"><svg class="ic" aria-hidden="true"><use href="#i-nav"/></svg>Google Maps</button>'
+      +'<button class="btn ghost block" id="btnCopyAddr"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg>Скопировать адрес</button>'
+      +'</div>';
+    open.innerHTML=html;
+    $("#btnYandex",open).addEventListener("click",function(){openUrl(cfg.yandexMapsUrl,"Яндекс Карты");});
+    $("#btnGoogle",open).addEventListener("click",function(){openUrl(cfg.googleMapsUrl,"Google Maps");});
+    $("#btnCopyAddr",open).addEventListener("click",copyAddr);
+  }
+}
+
+/* ══════════ штрихкод пропуска ══════════ */
+function buildBarcode(){
+  var seed=state.playerName||"GUEST",h=2166136261,i,out="";
+  for(i=0;i<seed.length;i++)h=(Math.imul(h^seed.charCodeAt(i),16777619))>>>0;
+  for(i=0;i<44;i++){h=(Math.imul(h,1103515245)+12345)>>>0;out+='<span style="width:'+(1+h%4)+'px"></span>';}
+  $("#barcode").innerHTML=out;
+}
+
+/* ══════════ общий рендер состояний ══════════ */
+function render(){
+  var reg=state.registered;
+  $("#regDefault").hidden=reg||deadlinePassed;
+  $("#regDone").hidden=!reg;
+  $("#regClosed").hidden=reg||!deadlinePassed;
+  $("#briefClosed").hidden=!deadlinePassed;
+  $("#pass").hidden=!reg;
+  $("#classifiedRing").style.display=reg?"none":"";
+  if(reg){
+    $("#passName").textContent=state.playerName||"GUEST";
+    $("#doneHi").textContent=state.playerName?("Рады видеть, "+state.playerName+". "):"";
+    $("#btnReveal").hidden=state.addressConfirmed;
+    var lv=(state.addressConfirmed&&!isPh(cfg.exactAddress))?cfg.exactAddress:"CLASSIFIED";
+    var pl=$("#passLoc");pl.textContent=lv;
+    pl.className="val "+(lv==="CLASSIFIED"?"locked":"ok");
+    buildBarcode();
+  }
+  fillAddr();
+  renderSpots();
+  updateCta();
+}
+
+/* ══════════ регистрация ══════════ */
+$("#btnOpenForm").addEventListener("click",function(){
+  if(isPh(cfg.googleFormUrl)){openRegModal();return;}
+  window.open(cfg.googleFormUrl,"_blank","noopener");
+});
+var modal=$("#modal");
+function closeModal(){modal.classList.remove("open");}
+function openRegModal(){
+  $("#mErr").classList.remove("show");$("#mName").value="";
+  modal.classList.add("open");
+  setTimeout(function(){$("#mName").focus();},60);
+}
+$("#btnAlready").addEventListener("click",openRegModal);
+$("#mClose").addEventListener("click",closeModal);
+modal.addEventListener("click",function(e){if(e.target===modal)closeModal();});
+function confirmName(){
+  var n=$("#mName").value.trim();
+  if(n.length<2){$("#mErr").textContent="Введи имя — минимум 2 символа";$("#mErr").classList.add("show");return;}
+  state.registered=true;state.playerName=n;lsSet("vl26:state",state);
+  closeModal();render();toast("Пропуск оформлен, "+n,"ok");
+  setTimeout(function(){go("pass");},350);
+}
+$("#mOk").addEventListener("click",confirmName);
+$("#mName").addEventListener("keydown",function(e){if(e.key==="Enter")confirmName();});
+
+/* ══════════ пропуск ══════════ */
+$("#btnReveal").addEventListener("click",function(){
+  if(isPh(cfg.exactAddress)){toast("Организатор ещё не добавил точный адрес в настройках","warn");return;}
+  state.addressConfirmed=true;lsSet("vl26:state",state);render();
+  toast("Доступ к адресу открыт","ok");
+});
+$("#btnRoute").addEventListener("click",function(){openUrl(cfg.yandexMapsUrl,"Яндекс Карты");});
+
+/* .ics — файл календаря (16:00–00:00 МСК) */
+$("#btnIcs").addEventListener("click",function(){
+  var ics=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//vice-lake//ilya-26//RU","BEGIN:VEVENT",
+    "UID:vice-lake-26@invitation",
+    "DTSTAMP:"+new Date().toISOString().replace(/[-:]/g,"").split(".")[0]+"Z",
+    "DTSTART:20261119T130000Z","DTEND:20261119T210000Z",
+    "SUMMARY:VICE LAKE — OPERATION ILYA 26",
+    "LOCATION:Сестрорецк\\, дачный посёлок «Ёлки»",
+    "DESCRIPTION:Вечеринка Ильи 26. Дресс-код: Street. Сбор с 16:00.",
+    "END:VEVENT","END:VCALENDAR"].join("\r\n");
+  var blob=new Blob([ics],{type:"text/calendar;charset=utf-8"});
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="vice-lake-26.ics";
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(function(){URL.revokeObjectURL(a.href);},500);
+  toast("Файл календаря скачан","ok");
+});
+
+/* PNG-пропуск, рисуется на canvas — без библиотек */
+$("#btnSave").addEventListener("click",function(){
+  try{
+    var W=720,H=1120,S=2,cv=document.createElement("canvas");
+    cv.width=W*S;cv.height=H*S;
+    var ctx=cv.getContext("2d");if(!ctx)throw new Error("no 2d");
+    ctx.scale(S,S);
+    ctx.fillStyle="#0d1028";ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle="rgba(255,255,255,.05)";
+    for(var x=0;x<=W;x+=36){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(var y=0;y<=H;y+=36){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    var g=ctx.createLinearGradient(0,0,W,0);
+    g.addColorStop(0,"#ff2d78");g.addColorStop(.5,"#8a5bff");g.addColorStop(1,"#25e6c6");
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,10);
+    try{document.fonts.load("900 72px Unbounded");document.fonts.load("700 22px 'JetBrains Mono'");}catch(e){}
+    ctx.fillStyle="#25e6c6";ctx.font="700 17px 'JetBrains Mono', monospace";ctx.fillText("CLASSIFIED PARTY FILE",48,96);
+    ctx.fillStyle="#ffffff";ctx.font="900 72px Unbounded, Arial, sans-serif";ctx.fillText("VICE LAKE",44,184);
+    ctx.fillStyle="#ff2d78";ctx.font="700 24px 'JetBrains Mono', monospace";ctx.fillText("OPERATION: ILYA 26",48,230);
+    var name=state.playerName||"GUEST";
+    var lv=(state.addressConfirmed&&!isPh(cfg.exactAddress))?cfg.exactAddress:"CLASSIFIED";
+    var rows=[["PLAYER",name],["EVENT","ILYA 26"],["DATE","19.11.2026"],["TIME","16:00—00:00"],
+      ["AREA","SESTRORETSK"],["DRESS CODE","STREET"],["STATUS","CONFIRMED"],["LOCATION",lv]];
+    var yy=300,i;
+    for(i=0;i<rows.length;i++){
+      ctx.fillStyle="#aab3d6";ctx.font="700 15px 'JetBrains Mono', monospace";ctx.fillText(rows[i][0],48,yy);
+      ctx.fillStyle=rows[i][1]==="CONFIRMED"?"#25e6c6":"#e9edff";
+      ctx.font="700 21px 'JetBrains Mono', monospace";
+      var v=rows[i][1].length>26?rows[i][1].slice(0,25)+"…":rows[i][1];
+      ctx.fillText(v,48,yy+34);
+      ctx.strokeStyle="rgba(255,255,255,.12)";
+      ctx.beginPath();ctx.moveTo(48,yy+50);ctx.lineTo(W-48,yy+50);ctx.stroke();
+      yy+=76;
+    }
+    var h=2166136261,j;
+    for(j=0;j<name.length;j++)h=(Math.imul(h^name.charCodeAt(j),16777619))>>>0;
+    ctx.fillStyle="rgba(233,237,255,.85)";
+    var bx=48;
+    for(j=0;j<60;j++){h=(Math.imul(h,1103515245)+12345)>>>0;var bw=1+h%4;ctx.fillRect(bx,yy+12,bw,62);bx+=bw+3;}
+    ctx.fillStyle="#aab3d6";ctx.font="700 13px 'JetBrains Mono', monospace";
+    ctx.fillText("VICE LAKE // OPERATION ILYA 26 — SESTRORETSK",48,H-52);
+    var a=document.createElement("a");
+    a.href=cv.toDataURL("image/png");a.download="vice-lake-pass.png";
+    document.body.appendChild(a);a.click();a.remove();
+    toast("Пропуск сохранён в загрузки","ok");
+  }catch(e){toast("Не удалось сохранить файл — сделай скриншот карточки","warn");}
+});
+
+/* ══════════ telegram ══════════ */
+$$(".tg").forEach(function(b){
+  b.addEventListener("click",function(){
+    if(isPh(cfg.organizerTelegram)){toast("Telegram организатора ещё не указан в настройках","warn");return;}
+    window.open("https://t.me/"+cfg.organizerTelegram.replace(/^@/,""),"_blank","noopener");
+  });
+});
+
+/* ══════════ вспомогательные кнопки ══════════ */
+$("#btnTransferForm").addEventListener("click",function(){go("registration");toast("Отметь трансфер в регистрационной форме","info");});
+$("#btnOvernight").addEventListener("click",function(){go("registration");toast("Выбери «Да, бронирую место» в форме","info");});
+
+/* ══════════ QR ══════════ */
+$("#qrUrl").textContent=cfg.publicInvitationUrl;
+var qrImg=$("#qrImg");
+qrImg.src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=10&bgcolor=e9f7f4&color=0d1028&data="+encodeURIComponent(cfg.publicInvitationUrl);
+qrImg.addEventListener("error",function(){$("#qrBox").hidden=true;$("#qrFallback").hidden=false;});
+$("#qrCopy").addEventListener("click",function(){
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(cfg.publicInvitationUrl).then(function(){toast("Ссылка скопирована","ok");},function(){toast("Не удалось скопировать","warn");});
+  }else toast("Браузер не поддерживает автокопирование","warn");
+});
+
+/* ══════════ sticky CTA + наверх ══════════ */
+var regInView=false;
+function updateCta(){
+  var hide=state.registered||deadlinePassed||regInView;
+  $("#cta").classList.toggle("show",!hide);
+}
+if("IntersectionObserver" in window){
+  var rio=new IntersectionObserver(function(es){regInView=!!(es[0]&&es[0].isIntersecting);updateCta();},{threshold:.15});
+  rio.observe($("#registration"));
+}
+$("#ctaLink").addEventListener("click",function(e){e.preventDefault();go("registration");});
+var toTop=$("#toTop");
+window.addEventListener("scroll",function(){toTop.classList.toggle("show",window.scrollY>700);},{passive:true});
+toTop.addEventListener("click",function(){
+  try{window.scrollTo({top:0,behavior:lessMotion?"auto":"smooth"});}catch(e){window.scrollTo(0,0);}
+});
+
+/* ══════════ старт ══════════ */
+render();
+setTimeout(function(){toast("Превью работает без внешних сервисов: фото — заглушки, ссылки-плейсхолдеры подскажут, что заполнить","info");},1400);
+})();
+</script>
+
+<script>
+/* ══════════ WELCOME: клик по джойстику / кнопке PLAY → MISSION START → главная страница ══════════ */
+(function(){
+"use strict";
+var wl=document.getElementById("welcome");
+if(!wl)return;
+document.body.classList.add("wl-lock");
+var started=false;
+function start(){
+  if(started)return;started=true;
+  try{if(window.vlSndToggle)window.vlSndToggle(true);}catch(e){}
+  wl.classList.add("go");
+  document.body.classList.remove("wl-lock");
+  var reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  setTimeout(function(){wl.classList.add("out");},reduced?60:1250);
+  setTimeout(function(){wl.style.display="none";},reduced?220:2250);
+  setTimeout(function(){try{window.scrollTo({top:0,behavior:"auto"});}catch(e){window.scrollTo(0,0);}},reduced?80:300);
+}
+var pad=document.getElementById("wlPad");
+var play=document.getElementById("wlPlay");
+/* клик по горящей кнопке PLAY */
+if(play)play.addEventListener("click",function(e){e.stopPropagation();start();});
+/* клик по любому месту джойстика — тоже старт */
+if(pad){
+  pad.addEventListener("click",start);
+  /* если фото не найдено: пробуем joystick.jpeg, иначе показываем заглушку */
+  var img=pad.querySelector("img");
+  if(img)img.addEventListener("error",function(){
+    if(img.getAttribute("data-fb")==="1"){img.style.display="none";pad.classList.add("noimg");}
+    else{img.setAttribute("data-fb","1");img.src="joystick.jpeg";}
+  });
+}
+/* Enter / Space где угодно на экране — тоже старт */
+document.addEventListener("keydown",function(e){
+  if(started)return;
+  if(e.key==="Enter"||e.key===" "){e.preventDefault();start();}
+});
+})();
+</script>
+
+<script>
+/* ══════════ БУМБОКС-ПЛЕЕР: Play / Stop / трек вперёд / трек назад ══════════
+   Блок добавлен в конец файла и работает независимо от остального кода.
+   Файлы должны лежать рядом с index.html. Расширение подставится само:
+   код пробует boomboks.jpg → .jpeg → .png → .webp → без расширения,
+   и track1.mp3 → .m4a → .wav → .ogg → без расширения.
+   Названия треков меняются в списке TRACKS ниже.
+
+   ЗВУК: как только на бумбоксе начинает играть трек, фоновая тема
+   (ilya-theme.mp3, которую запускает PLAY на welcome-экране и кнопка динамика
+   в шапке) сразу ОСТАНАВЛИВАЕТСЯ — два звука одновременно не играют.
+   Тема создана через new Audio() и в DOM не лежит, поэтому глушим её
+   штатным способом — вызываем window.vlSndToggle(false) из основного скрипта
+   (иконка динамика в шапке при этом корректно переключается на «выкл»).
+   После STOP тема возвращается сама (если RESUME_THEME=true).
+   Настройка: DUCK_OTHERS=false — вообще не трогать чужой звук,
+              RESUME_THEME=false — глушить тему, но не включать её обратно. */
+var DUCK_OTHERS=true;    // останавливать фоновую тему, когда играет бумбокс
+var RESUME_THEME=true;   // возвращать фоновую тему после STOP / конца трека
+(function(){
+"use strict";
+var TRACKS=[
+  {title:"Track 01",file:"track1"},
+  {title:"Track 02",file:"track2"},
+  {title:"Track 03",file:"track3"},
+  {title:"Track 04",file:"track4"}
+];
+var IMG_EXTS=["boomboks.jpg",".jpg",".jpeg",".png",".webp"];
+var AUD_EXTS=["",".mp3",".m4a",".wav",".ogg"];
+
+var box=document.getElementById("bbox");
+if(!box)return;
+var img=document.getElementById("bbImg");
+var bNum=document.getElementById("bbNum");
+var bName=document.getElementById("bbName");
+var bState=document.getElementById("bbState");
+var bTime=document.getElementById("bbTime");
+var bProg=document.getElementById("bbProg");
+var bDots=document.getElementById("bbDots");
+var bPrev=document.getElementById("bbPrev");
+var bNext=document.getElementById("bbNext");
+var bPlay=document.getElementById("bbPlay");
+var bStop=document.getElementById("bbStop");
+var playIco=document.getElementById("bbPlayIco");
+var pauseIco=document.getElementById("bbPauseIco");
+
+/* ── реестр всех Audio-объектов страницы ──────────────────────────────────
+   Фоновая тема создаётся внутри замыкания основного скрипта как
+   new Audio("ilya-theme.mp3") и в DOM не попадает — «в лоб» её не достать.
+   Поэтому аккуратно перехватываем конструктор Audio и запоминаем каждый
+   созданный объект. Поведение конструктора не меняется: если его вызвали
+   без new, как и раньше, возвращается готовый элемент <audio>. */
+var allAudio=[];
+(function(){
+  var N=window.Audio;
+  if(!N||N.__vlHooked)return;
+  function W(src){
+    var a=(this instanceof W)?new N(src):N(src);
+    allAudio.push(a);
+    return a;
+  }
+  W.prototype=N.prototype;
+  W.__vlHooked=true;
+  try{window.Audio=W;}catch(e){}
+})();
+
+var audio=new Audio();
+allAudio=allAudio.filter(function(a){return a!==audio;});   /* свой плеер в списке «чужих» не держим */
+audio.preload="metadata";
+var idx=0,curFile=null,fileTries=0,stopped=true;
+
+/* ── фоновая тема (welcome / кнопка динамика в шапке) ─────────────────────
+   Тема живёт в переменной player внутри основного скрипта и создаётся как
+   new Audio("ilya-theme.mp3") — в DOM её нет, поэтому «в лоб» её не найти.
+   Используем публичный переключатель window.vlSndToggle, который там же и
+   объявлен: vlSndToggle(false) — тема останавливается, vlSndToggle(true) —
+   снова играет. Дополнительно глушим любые <audio>, которые есть в разметке. */
+var themeStopped=false,themeVol=.55,volGuard=null,themeBusy=false;
+function themeEl(){
+  var l=others();
+  return l.length?l[0]:null;
+}
+function stopTheme(){
+  if(!DUCK_OTHERS)return;
+  var el=themeEl();
+  if(el&&el.volume>0)themeVol=el.volume;      /* запоминаем громкость темы */
+  themeStopped=true;
+  themeBusy=true;                             /* не принимать свои же события за ручные */
+  try{if(window.vlSndToggle)window.vlSndToggle(false);}catch(e){}
+  if(el&&!el.paused){try{el.pause();}catch(e){}}
+  themeBusy=false;
+  duckOthers();
+  if(!themeWatch)armThemeWatch();             /* тема появится позже — продолжим следить */
+}
+function resumeTheme(){
+  if(!DUCK_OTHERS||!RESUME_THEME||!themeStopped)return;
+  themeStopped=false;
+  if(volGuard){clearInterval(volGuard);volGuard=null;}
+  var tries=0,floor=Math.max(themeVol,.45);
+  themeBusy=true;
+  try{if(window.vlSndToggle)window.vlSndToggle(true);}catch(e){}
+  themeBusy=false;
+  /* основной скрипт набирает громкость с нуля; подстрахуемся, чтобы тема
+     не осталась слишком тихой, если её выключили в момент набора */
+  volGuard=setInterval(function(){
+    var el=themeEl();tries++;
+    if(tries>8){clearInterval(volGuard);volGuard=null;return;}
+    if(el&&!el.paused&&el.volume<floor-.05){
+      try{el.volume=floor;}catch(e){}
+    }
+  },250);
+}
+
+/* ── «приглушение» остальных аудио на странице (теги <audio> в разметке) ──
+   Пока играет бумбокс, они стоят на паузе и помечены флагом _vlDucked.
+   Если такое аудио включили вручную — бумбокс тут же уходит на паузу,
+   чтобы два звука не играли вместе. */
+var ducked=[],uid=0;
+function others(){
+  var out=[],seen={};
+  function add(a){
+    if(!a||a===audio)return;
+    if(seen[a.__vlId||(a.__vlId=++uid)])return;
+    out.push(a);
+  }
+  allAudio.forEach(add);
+  Array.prototype.forEach.call(document.getElementsByTagName("audio"),add);
+  return out;
+}
+function duckOthers(){
+  if(!DUCK_OTHERS)return;
+  /* убираем из списка то, что уже играет (пользователь включил сам) */
+  ducked=ducked.filter(function(d){return d.el.paused;});
+  others().forEach(function(a){
+    if(a._vlDucked)return;                    /* уже приглушён нами */
+    if(!a.paused){
+      ducked.push({el:a,vol:a.volume});
+      a._vlDucked=true;
+      try{a.pause();}catch(e){}
+    }
+    watchOne(a);                              /* следим за ручным включением */
+  });
+}
+function restoreOthers(){
+  if(!DUCK_OTHERS)return;
+  var list=ducked;ducked=[];
+  list.forEach(function(d){
+    try{d.el._vlDucked=false;}catch(e){}
+    if(d.el.paused){
+      try{d.el.volume=d.vol;}catch(e){}
+      var p=d.el.play();
+      if(p&&p.then)p.then(function(){},function(){});
+    }
+  });
+}
+/* если другое аудио (тему) запустили вручную — бумбокс уходит на паузу */
+function watchOne(a){
+  if(a._vlWatch)return;
+  a._vlWatch=true;
+  a.addEventListener("play",function(){
+    if(a._vlDucked)return;                    /* это наше собственное включение */
+    ducked=ducked.filter(function(d){return d.el!==a;});
+    if(!audio.paused){try{audio.pause();}catch(e){}}
+    syncThemeIcon();
+  });
+  a.addEventListener("pause",syncThemeIcon);
+}
+others().forEach(watchOne);
+function syncThemeIcon(){
+  /* кнопка динамика в шапке: иконка «вкл/выкл» приводится в соответствие
+     с реальным состоянием темы, чтобы не оставалась подсвеченной на паузе */
+  if(!DUCK_OTHERS)return;
+  var b=document.getElementById("sndBtn");if(!b)return;
+  var onIco=document.getElementById("sndOnIco"),offIco=document.getElementById("sndOffIco");
+  var t=others()[0];
+  var on=!!(t&&!t.paused);
+  b.classList.toggle("on",on);b.setAttribute("aria-pressed",String(on));
+  if(onIco)onIco.style.display=on?"":"none";
+  if(offIco)offIco.style.display=on?"none":"";
+}
+
+/* ── картинка бумбокса: перебор расширений ── */
+if(img){
+  var ii=0;
+  img.addEventListener("error",function(){
+    ii++;
+    if(ii<IMG_EXTS.length){img.src=IMG_EXTS[ii];}
+    else{
+      img.style.display="none";
+      var ph=document.createElement("div");
+      ph.className="bbox-nofile";
+      ph.textContent="положи файл boomboks рядом с index.html";
+      img.parentNode.insertBefore(ph,img.nextSibling);
+    }
+  });
+  img.src=IMG_EXTS[0];
+}
+
+/* ── индикаторы треков ── */
+TRACKS.forEach(function(){bDots.appendChild(document.createElement("i"));});
+function pad(n){return (n<10?"0":"")+n;}
+function mmss(s){
+  if(!isFinite(s)||s<0)s=0;
+  var m=Math.floor(s/60),x=Math.floor(s%60);
+  return pad(m)+":"+pad(x);
+}
+function paint(){
+  bNum.textContent="Track "+pad(idx+1)+"/"+pad(TRACKS.length);
+  bName.textContent=TRACKS[idx].title;
+  Array.prototype.forEach.call(bDots.children,function(d,i){d.className=i===idx?"on":"";});
+}
+function paintState(){
+  var playing=!audio.paused&&!stopped;
+  box.classList.toggle("playing",playing);
+  bState.textContent=playing?"Play":(stopped?"Stop":"Pause");
+  playIco.style.display=playing?"none":"";
+  pauseIco.style.display=playing?"":"none";
+  bPlay.setAttribute("aria-label",playing?"Пауза":"Play — запустить трек");
+}
+function paintTime(){
+  bTime.textContent=mmss(audio.currentTime)+" / "+(isFinite(audio.duration)?mmss(audio.duration):"00:00");
+  bProg.style.width=(audio.duration?(audio.currentTime/audio.duration*100):0)+"%";
+}
+
+/* ── загрузка трека с перебором расширений ── */
+function load(i,autoplay){
+  idx=((i%TRACKS.length)+TRACKS.length)%TRACKS.length;
+  paint();paintTime();
+  fileTries=0;curFile=null;
+  setSrc(autoplay);
+}
+function setSrc(autoplay){
+  var base=TRACKS[idx].file;
+  curFile=base+AUD_EXTS[fileTries];
+  audio.src=curFile;
+  audio.load();
+  if(autoplay){
+    var p=audio.play();
+    if(p&&p.then)p.then(function(){stopped=false;paintState();},function(){stopped=true;paintState();});
+    else{stopped=false;paintState();}
+  }else{
+    stopped=true;paintState();
+  }
+}
+audio.addEventListener("error",function(){
+  fileTries++;
+  if(fileTries<AUD_EXTS.length){setSrc(!stopped);}
+  else if(audio.paused){
+    /* файл трека не найден и ничего не играет — возвращаем фоновую тему */
+    resumeTheme();
+    if(RESUME_THEME)restoreOthers();
+    syncThemeIcon();
+  }
+});
+audio.addEventListener("play",function(){stopped=false;stopTheme();duckOthers();syncThemeIcon();paintState();});
+audio.addEventListener("pause",function(){
+  /* в списке остаются только те, что приглушены нами и всё ещё на паузе */
+  ducked=ducked.filter(function(d){return d.el.paused&&d.el._vlDucked;});
+  paintState();
+});
+audio.addEventListener("timeupdate",paintTime);
+audio.addEventListener("loadedmetadata",paintTime);
+audio.addEventListener("ended",function(){
+  var wasPlaying=!stopped;
+  load(idx+1,true);
+  /* следующий трек не запустился (нет файла) — возвращаем фоновую тему */
+  setTimeout(function(){
+    if(wasPlaying&&audio.paused){
+      resumeTheme();
+      if(RESUME_THEME)restoreOthers();
+      syncThemeIcon();
+    }
+  },700);
+});
+
+/* ── клавиши ── */
+bPlay.addEventListener("click",function(){
+  if(audio.paused){
+    if(!audio.src||audio.src!==location.href){load(idx,true);return;}
+    var p=audio.play();
+    if(p&&p.then)p.then(function(){stopped=false;paintState();},function(){});
+  }else{audio.pause();}
+  paintState();
+});
+bStop.addEventListener("click",function(){
+  audio.pause();
+  try{audio.currentTime=0;}catch(e){}
+  stopped=true;paintState();paintTime();
+  resumeTheme();
+  if(RESUME_THEME)restoreOthers();
+  syncThemeIcon();
+});
+bNext.addEventListener("click",function(){load(idx+1,!stopped||!audio.paused);});
+bPrev.addEventListener("click",function(){
+  if(audio.currentTime>3){try{audio.currentTime=0;}catch(e){}paintTime();return;}
+  load(idx-1,!stopped||!audio.paused);
+});
+paint();paintState();paintTime();
+
+/* ── наблюдатель за фоновой темой ─────────────────────────────────────────
+   Тема создаётся по клику PLAY на welcome-экране (или кнопкой динамика),
+   то есть позже этого скрипта, и лежит вне DOM. Поэтому проверяем её
+   периодически: как только тема заиграла вручную — бумбокс уходит на паузу,
+   чтобы два звука не звучали одновременно. */
+var themeGuard=null,themeTries=0,themeWatch=null;
+function onThemePlay(){
+  /* тему включили вручную (кнопкой в шапке или на welcome) — бумбокс замолкает */
+  if(themeBusy)return;                        /* это наше собственное включение темы */
+  if(audio.paused)return;
+  try{audio.pause();}catch(e){}
+  themeStopped=false;
+  paintState();
+}
+function armThemeWatch(){
+  if(themeGuard){clearInterval(themeGuard);themeGuard=null;}
+  themeTries=0;
+  themeGuard=setInterval(function(){
+    var el=themeEl();
+    themeTries++;
+    if(el&&el!==themeWatch){
+      themeWatch=el;
+      el.addEventListener("play",onThemePlay);
+      /* тему выключили вручную — значит, возвращать после STOP уже нечего */
+      el.addEventListener("pause",function(){if(!themeBusy)themeStopped=false;});
+      clearInterval(themeGuard);themeGuard=null;
+    }else if(themeTries>240){                  /* ~2 минуты — тема так и не появилась */
+      clearInterval(themeGuard);themeGuard=null;
+    }
+  },400);
+}
+armThemeWatch();
+
+/* ═══ АРХИВ ФОТОГРАФИЙ: img1..img4 ═══════════════════════════════════════
+   Фото лежат рядом с index.html. Расширение подставляется автоматически:
+   img1 → img1.jpg → img1.jpeg → img1.png → img1.webp.
+   Если ни один вариант не подошёл, на месте фото появляется аккуратная
+   заглушка «Photo file NN · не загружено» — вёрстка не едет.
+   Список расширений меняется в ARCH_EXTS ниже. */
+(function(){
+  var ARCH_EXTS=["",".jpg",".jpeg",".png",".webp"];
+  var list=document.querySelectorAll?document.querySelectorAll("#photoArchive img.arch"):[];
+  Array.prototype.forEach.call(list,function(im){
+    var names=(im.getAttribute("data-files")||"").split(",");
+    var base="",tries=0;
+    function setBase(){
+      var s=im.getAttribute("src")||"";
+      for(var k=0;k<names.length;k++){
+        var n=names[k];
+        if(n&&s.indexOf(n)===0){base=n;return;}
+      }
+      base=s;
+    }
+    setBase();
+    im.addEventListener("error",function(){
+      if(im.__archDead)return;
+      tries++;
+      if(tries<ARCH_EXTS.length){im.src=base+ARCH_EXTS[tries];return;}
+      im.__archDead=true;
+      var m=/архив\s*(\d+)/i.exec(im.getAttribute("alt")||"");
+      var num=m?("0"+m[1]).slice(-2):"01";
+      var ph=document.createElement("div");
+      ph.className="ph-fb";
+      ph.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-img"/></svg>';
+      var t=document.createElement("p");
+      t.textContent="Photo file "+num+" · не загружено";
+      ph.appendChild(t);
+      if(im.parentNode)im.parentNode.replaceChild(ph,im);
+    });
+  });
+})();
+})();
+</script>
+
+</body>
+</html>
